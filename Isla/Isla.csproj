@@ -45,9 +45,6 @@
     <Reference Include="Castle.Facilities.Logging">
       <HintPath>..\packages\Castle.LoggingFacility.3.2.0\lib\net40\Castle.Facilities.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="Moq">
-      <HintPath>..\packages\Moq.4.2.1402.2112\lib\net40\Moq.dll</HintPath>
-    </Reference>
     <Reference Include="ServiceStack.Text">
       <HintPath>..\packages\ServiceStack.Text.4.0.19\lib\net40\ServiceStack.Text.dll</HintPath>
     </Reference>

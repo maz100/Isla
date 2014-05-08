@@ -16,6 +16,7 @@ using Test.Isla.Serialisation.Components;
 using log4net.Config;
 using Castle.MicroKernel.Registration;
 using ServiceStack.Text;
+using Ninject.MockingKernel.Moq;
 
 namespace Test.Isla
 {
@@ -35,19 +36,19 @@ namespace Test.Isla
 		{
 			//we expect a timespan and an invocation to be logged via the logging interceptor
 			var invocation = new Mock<IInvocation> ();
-			invocation.Setup (x => x.InvocationTarget).Returns (new SomeClass());
-			invocation.Setup(x=>x.Method).Returns(typeof(SomeClass).GetMethod("SomeMethod"));
-			invocation.Setup(x=>x.Arguments).Returns(new object[]{"hello"});
+			invocation.Setup (x => x.InvocationTarget).Returns (new SomeClass ());
+			invocation.Setup (x => x.Method).Returns (typeof(SomeClass).GetMethod ("SomeMethod"));
+			invocation.Setup (x => x.Arguments).Returns (new object[]{ "hello" });
 			invocation.Setup (x => x.ReturnValue).Returns ("hello");
 			invocation.Setup (x => x.Proceed ());
 
 			//use a json serialiser to serialise the timed incovation
 			string serialisedTimedInvocation = "some serialised timespan";	
 			_jsonInvocationLoggingInterceptor.Get <IJsonSerializer> ()
-				.Setup (x => x.Serialize (It.Is<TimedInvocation> (	y => y.ElapsedTime != null &&
-																	y.MethodName == invocation.Object.Method.Name &&
-																	y.Arguments == invocation.Object.Arguments &&
-																	y.ReturnValue == invocation.Object.ReturnValue)))
+				.Setup (x => x.Serialize (It.Is<TimedInvocation> (y => y.ElapsedTime != null &&
+			y.MethodName == invocation.Object.Method.Name &&
+			y.Arguments == invocation.Object.Arguments &&
+			y.ReturnValue == invocation.Object.ReturnValue)))
 				.Returns (serialisedTimedInvocation);
 					
 			//then use an ILog to log the serialised object at info level
