@@ -1,7 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{28A7F0BD-3E03-4A10-B3D7-4AFFBB2AA925}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Isla", "Isla\Isla.csproj", "{7A7EEDCE-0406-49FB-A8CC-1D7A31BEA319}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Isla.Testing", "Isla\Isla.Testing\Isla.Testing.csproj", "{75133565-7236-4184-B3F7-A4024A8F945C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Isla.Testing.Moq", "Isla\Isla.Testing.Moq\Isla.Testing.Moq.csproj", "{9773E947-D6C4-4655-A22C-7BA84B9FB836}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{707B4212-752A-4D2B-B9F8-B11784D0758A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Isla", "Test.Isla\Test.Isla.csproj", "{7F6A3DAC-73FE-4EB9-B7EB-7C490A1AB0A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +19,28 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{75133565-7236-4184-B3F7-A4024A8F945C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{75133565-7236-4184-B3F7-A4024A8F945C}.Debug|x86.Build.0 = Debug|Any CPU
+		{75133565-7236-4184-B3F7-A4024A8F945C}.Release|x86.ActiveCfg = Release|Any CPU
+		{75133565-7236-4184-B3F7-A4024A8F945C}.Release|x86.Build.0 = Release|Any CPU
 		{7A7EEDCE-0406-49FB-A8CC-1D7A31BEA319}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{7A7EEDCE-0406-49FB-A8CC-1D7A31BEA319}.Debug|x86.Build.0 = Debug|Any CPU
 		{7A7EEDCE-0406-49FB-A8CC-1D7A31BEA319}.Release|x86.ActiveCfg = Release|Any CPU
 		{7A7EEDCE-0406-49FB-A8CC-1D7A31BEA319}.Release|x86.Build.0 = Release|Any CPU
+		{7F6A3DAC-73FE-4EB9-B7EB-7C490A1AB0A1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7F6A3DAC-73FE-4EB9-B7EB-7C490A1AB0A1}.Debug|x86.Build.0 = Debug|Any CPU
+		{7F6A3DAC-73FE-4EB9-B7EB-7C490A1AB0A1}.Release|x86.ActiveCfg = Release|Any CPU
+		{7F6A3DAC-73FE-4EB9-B7EB-7C490A1AB0A1}.Release|x86.Build.0 = Release|Any CPU
+		{9773E947-D6C4-4655-A22C-7BA84B9FB836}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9773E947-D6C4-4655-A22C-7BA84B9FB836}.Debug|x86.Build.0 = Debug|Any CPU
+		{9773E947-D6C4-4655-A22C-7BA84B9FB836}.Release|x86.ActiveCfg = Release|Any CPU
+		{9773E947-D6C4-4655-A22C-7BA84B9FB836}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7A7EEDCE-0406-49FB-A8CC-1D7A31BEA319} = {28A7F0BD-3E03-4A10-B3D7-4AFFBB2AA925}
+		{75133565-7236-4184-B3F7-A4024A8F945C} = {28A7F0BD-3E03-4A10-B3D7-4AFFBB2AA925}
+		{9773E947-D6C4-4655-A22C-7BA84B9FB836} = {28A7F0BD-3E03-4A10-B3D7-4AFFBB2AA925}
+		{7F6A3DAC-73FE-4EB9-B7EB-7C490A1AB0A1} = {707B4212-752A-4D2B-B9F8-B11784D0758A}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Isla\Isla.csproj

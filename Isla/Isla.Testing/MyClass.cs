@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Isla
+namespace Isla.Testing
 {
 	public class MyClass
 	{
