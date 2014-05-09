@@ -16,7 +16,8 @@ using Test.Isla.Serialisation.Components;
 using log4net.Config;
 using Castle.MicroKernel.Registration;
 using ServiceStack.Text;
-using Ninject.MockingKernel.Moq;
+using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.AutoMoq;
 
 namespace Test.Isla
 {
@@ -28,7 +29,9 @@ namespace Test.Isla
 		[SetUp]
 		public void SetUp ()
 		{
-			_jsonInvocationLoggingInterceptor = MoqAutoMocker.CreateInstance<JsonInvocationLoggingInterceptor> ();
+			var fixture = new Fixture ().Customize (new AutoMoqCustomization ());
+
+			_jsonInvocationLoggingInterceptor = fixture.Create<JsonInvocationLoggingInterceptor> ();
 		}
 
 		[Test ()]
@@ -71,7 +74,6 @@ namespace Test.Isla
 			XmlConfigurator.Configure ();
 
 			var container = new WindsorContainer ();
-
 
 			container.Install (new IslaInstaller ());
 
