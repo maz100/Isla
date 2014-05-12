@@ -30,7 +30,7 @@ namespace Isla.Logging
 
 			var jsonTimedInvocation = JsonSerializer.Serialize (timedInvocation);
 
-			logger.Info (jsonTimedInvocation);
+			//logger.Info (jsonTimedInvocation);
 		}
 
 		#endregion

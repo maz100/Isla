@@ -64,7 +64,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Components\" />
     <Folder Include="Logging\Components\" />
     <Folder Include="Serialisation\Components\" />
   </ItemGroup>
