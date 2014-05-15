@@ -1,24 +1,24 @@
-﻿using NUnit.Framework;
-using System;
-using Isla;
-using Castle.Core;
-using Moq;
-using Castle.DynamicProxy;
-using Isla.Testing.Moq;
-using System.Diagnostics;
-using System.Reactive.Concurrency;
-using log4net;
-using Isla.Serialisation.Components;
-using Isla.Logging.Components;
-using Isla.Logging;
-using Castle.Windsor;
-using Test.Isla.Serialisation.Components;
-using log4net.Config;
-using Castle.MicroKernel.Registration;
-using ServiceStack.Text;
-using Ninject.MockingKernel.Moq;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Concurrency;
+using Castle.Core;
+using Castle.DynamicProxy;
+using Castle.MicroKernel.Registration;
+using Castle.Windsor;
+using Isla;
+using Isla.Logging;
+using Isla.Logging.Components;
+using Isla.Serialisation.Components;
+using Isla.Testing.Moq;
+using Moq;
+using NUnit.Framework;
+using ServiceStack.Text;
+using log4net;
+using log4net.Config;
+using log4net.Layout;
+using Test.Isla.Serialisation.Components;
 
 namespace Test.Isla
 {
@@ -135,6 +135,12 @@ namespace Test.Isla
 
 			x.Mocks ().VerifyAll ();
 
+		}
+
+		[Test]
+		public void TestJsonLayout()
+		{
+			SerializedLayout serializedLayout = new SerializedLayout ();
 		}
 	}
 }

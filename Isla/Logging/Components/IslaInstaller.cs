@@ -1,5 +1,4 @@
 ﻿using System;
-using Castle.Services.Logging;
 using Castle.MicroKernel.Registration;
 using log4net.Config;
 using Isla.Logging.Components;
