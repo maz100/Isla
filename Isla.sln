@@ -13,11 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{707B4212-7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Isla", "Test.Isla\Test.Isla.csproj", "{7F6A3DAC-73FE-4EB9-B7EB-7C490A1AB0A1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{D1C62E69-8629-47CC-BD28-D5FFF55148ED}"
-	ProjectSection(SolutionItems) = preProject
-		wercker.yml = wercker.yml
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
