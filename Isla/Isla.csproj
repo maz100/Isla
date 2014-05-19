@@ -52,6 +52,8 @@
     <Compile Include="Logging\Components\LogManager.cs" />
     <Compile Include="Logging\Components\IslaInstaller.cs" />
     <Compile Include="Logging\JsonInvocationLoggingInterceptor.cs" />
+    <Compile Include="Logging\RawLogMessage.cs" />
+    <Compile Include="Logging\LogMessage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

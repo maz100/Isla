@@ -19,6 +19,7 @@ using log4net;
 using log4net.Config;
 using log4net.Layout;
 using Test.Isla.Serialisation.Components;
+using System.IO;
 
 namespace Test.Isla
 {
@@ -73,7 +74,10 @@ namespace Test.Isla
 		
 			var someClass = container.Resolve<ISomeClass> ();
 
-			someClass.SomeMethod ("hello world");
+			for (int i = 0; i < 1000; i++) {
+				someClass.SomeMethod ("hello world");
+			}
+
 		}
 
 		[Test]
@@ -138,9 +142,43 @@ namespace Test.Isla
 		}
 
 		[Test]
-		public void TestJsonLayout()
+		public void TestJsonLayout ()
 		{
 			SerializedLayout serializedLayout = new SerializedLayout ();
+		}
+
+		[Test]
+		public void TestDeserialiseLogEntry ()
+		{
+			var jsonLogEntry = @"{""date"":""2014-05-15T15:39:54.6832140+01:00"",""level"":""INFO"",""sitename"":""test-domain-Test.Isla.dll"",""logger"":""Test.Isla.Serialisation.Components.SomeClass"",""thread"":""TestRunnerThread"",""message"":""{\""MethodName\"":\""SomeMethod\"",\""Arguments\"":[\""hello world\""],\""ReturnValue\"":\""hello world\"",\""ElapsedTime\"":\""00:00:00.0003261\""}""}";
+
+			var s = new ServiceStack.Text.JsonStringSerializer ();
+
+			var result = s.DeserializeFromString<RawLogMessage> (jsonLogEntry);
+
+			var message = result.Message;
+
+			var inv = s.DeserializeFromString<TimedInvocation> (message);
+		}
+
+		[Test]
+		public void TestReadFromFile ()
+		{
+			var lines = File.ReadAllLines ("log.txt");
+
+			var s = new JsonStringSerializer ();
+
+			var rawLogMessages = new List<RawLogMessage> ();
+			foreach (var item in lines) {
+				rawLogMessages.Add (s.DeserializeFromString<RawLogMessage> (item));
+			}
+
+			var logMessages = rawLogMessages.Select (x => new LogMessage {
+				Date = x.Date,
+				Level = x.Level,
+				Logger = x.Logger,
+				TimedInvocation = s.DeserializeFromString<TimedInvocation> (x.Message)
+			}).ToList();
 		}
 	}
 }

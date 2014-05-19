@@ -4,6 +4,7 @@ using System.Diagnostics;
 using log4net;
 using Isla.Serialisation.Components;
 using Isla.Logging.Components;
+using ServiceStack.Text;
 
 namespace Isla.Logging
 {
@@ -17,7 +18,7 @@ namespace Isla.Logging
 
 		public void Intercept (IInvocation invocation)
 		{
-			var logger = LogManager.GetLogger (invocation.InvocationTarget.ToString());
+			var logger = LogManager.GetLogger (invocation.InvocationTarget.ToString ());
 
 			var stopwatch = Stopwatch.StartNew ();
 
