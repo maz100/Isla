@@ -168,10 +168,7 @@ namespace Test.Isla
 
 			var s = new JsonStringSerializer ();
 
-			var rawLogMessages = new List<RawLogMessage> ();
-			foreach (var item in lines) {
-				rawLogMessages.Add (s.DeserializeFromString<RawLogMessage> (item));
-			}
+			var rawLogMessages = lines.Select (s.DeserializeFromString<RawLogMessage>);
 
 			var logMessages = rawLogMessages.Select (x => new LogMessage {
 				Date = x.Date,
