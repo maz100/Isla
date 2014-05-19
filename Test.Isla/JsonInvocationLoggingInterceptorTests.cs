@@ -20,6 +20,7 @@ using log4net.Config;
 using log4net.Layout;
 using Test.Isla.Serialisation.Components;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace Test.Isla
 {
@@ -92,6 +93,8 @@ namespace Test.Isla
 			var serialisedInvocation = serialiser.SerializeToString (timedInvocation);
 
 			var deserialisedInstance = serialiser.DeserializeFromString<TimedInvocation> (serialisedInvocation);
+
+			Assert.AreEqual (timedInvocation.MethodName, deserialisedInstance.MethodName);
 		}
 
 		private Mock<IInvocation> SetupInvocationMock ()
@@ -161,7 +164,7 @@ namespace Test.Isla
 			var inv = s.DeserializeFromString<TimedInvocation> (message);
 		}
 
-		[Test]
+		[Test, Category ("Example")]
 		public void TestReadFromFile ()
 		{
 			var lines = File.ReadAllLines ("log.txt");
@@ -175,7 +178,23 @@ namespace Test.Isla
 				Level = x.Level,
 				Logger = x.Logger,
 				TimedInvocation = s.DeserializeFromString<TimedInvocation> (x.Message)
-			}).ToList();
+			}).ToList ();
+		}
+
+		[Test]
+		public void TestSerializeUsingJsonNet ()
+		{
+			var timedInvocation = new TimedInvocation ();
+			timedInvocation.MethodName = "test method name";
+			timedInvocation.Arguments = new object[]{ "hello", 3, DateTime.Now };
+			timedInvocation.ReturnValue = "test return value";
+			timedInvocation.ElapsedTime = new TimeSpan (1, 2, 3);
+
+			var serialisedInvocation = JsonConvert.SerializeObject (timedInvocation);
+
+			var deserialisedInstance = JsonConvert.DeserializeObject<TimedInvocation> (serialisedInvocation);
+
+			Assert.AreEqual (timedInvocation.MethodName, deserialisedInstance.MethodName);
 		}
 	}
 }
