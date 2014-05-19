@@ -74,7 +74,7 @@ namespace Test.Isla
 		
 			var someClass = container.Resolve<ISomeClass> ();
 
-			for (int i = 0; i < 1000; i++) {
+			for (int i = 0; i < 10; i++) {
 				someClass.SomeMethod ("hello world");
 			}
 
@@ -163,7 +163,7 @@ namespace Test.Isla
 			var inv = s.DeserializeFromString<TimedInvocation> (message);
 		}
 
-		[Test, Category ("Example")]
+		[Test, Category ("Example"), Ignore]
 		public void TestReadFromFile ()
 		{
 			var lines = File.ReadAllLines ("log.txt");
