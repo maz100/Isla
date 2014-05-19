@@ -14,9 +14,11 @@ namespace Isla.Serialisation.Components
 
 		public string Serialize (TimedInvocation invocation)
 		{
-			var serialiser = new JsonStringSerializer ();
-			var serialisedInvocation = serialiser.SerializeToString (invocation);
-			return serialisedInvocation;
+			using (JsConfig.With (timeSpanHandler: TimeSpanHandler.StandardFormat)) {
+				var serialiser = new JsonStringSerializer ();
+				var serialisedInvocation = serialiser.SerializeToString (invocation);
+				return serialisedInvocation;
+			}
 		}
 
 		#endregion
