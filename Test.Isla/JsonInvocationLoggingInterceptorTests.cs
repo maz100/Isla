@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reactive.Concurrency;
 using Castle.Core;
 using Castle.DynamicProxy;
 using Castle.MicroKernel.Registration;
