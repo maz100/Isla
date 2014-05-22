@@ -65,6 +65,7 @@
     <Compile Include="Serialisation\Components\DummyInvocation.cs" />
     <Compile Include="Serialisation\Components\ISomeClass.cs" />
     <Compile Include="Serialisation\Components\SomeClass.cs" />
+    <Compile Include="TestInstaller.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

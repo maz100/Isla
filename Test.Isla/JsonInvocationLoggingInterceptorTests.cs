@@ -31,6 +31,8 @@ namespace Test.Isla
 		[SetUp]
 		public void SetUp ()
 		{
+			XmlConfigurator.Configure ();
+
 			_interceptor = MoqAutoMocker.CreateInstance<JsonInvocationLoggingInterceptor> ();
 		}
 
@@ -60,24 +62,15 @@ namespace Test.Isla
 		[Test]
 		public void TestUsingInstaller ()
 		{
-			XmlConfigurator.Configure ();
-
 			var container = new WindsorContainer ();
 
+			container.Install (new IslaInstaller(), new TestInstaller());
 
-			container.Install (new IslaInstaller ());
-
-			container.Register (Classes.FromThisAssembly ()
-				.Where (x => x.Namespace.Contains ("Components"))
-				.WithServiceFirstInterface ()
-				.Configure (x => x.Interceptors<JsonInvocationLoggingInterceptor> ()));
-		
 			var someClass = container.Resolve<ISomeClass> ();
 
 			for (int i = 0; i < 10; i++) {
 				someClass.SomeMethod ("hello world");
 			}
-
 		}
 
 		[Test]
@@ -163,7 +156,7 @@ namespace Test.Isla
 			var inv = s.DeserializeFromString<TimedInvocation> (message);
 		}
 
-		[Test, Category ("Example"), Ignore]
+		[Test, Category ("Example")]
 		public void TestReadFromFile ()
 		{
 			var lines = File.ReadAllLines ("log.txt");
@@ -178,6 +171,13 @@ namespace Test.Isla
 				Logger = x.Logger,
 				TimedInvocation = s.DeserializeFromString<TimedInvocation> (x.Message)
 			}).ToList ();
+
+			var searchResults = logMessages.Where (x => x.TimedInvocation.Arguments [0].Equals("hello world")).ToList();
+
+			var longestRunningCall = logMessages.First(x=>x.TimedInvocation.ElapsedTime==logMessages.Max (y => y.TimedInvocation.ElapsedTime));
+
+			var errorsInLastHour = logMessages.Count (x => x.Date > DateTime.Now.AddHours (-1) && x.Level == "ERROR");
+
 		}
 
 		[Test]
