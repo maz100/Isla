@@ -194,9 +194,9 @@ namespace Test.Isla
 
 			var searchResults = logMessages.Where (x => x.TimedInvocation.Arguments [0].Equals ("hello world")).ToList ();
 
-			var longestRunningCall = logMessages.First (x => x.TimedInvocation.ElapsedTime == logMessages.Max (y => y.TimedInvocation.ElapsedTime));
+			//var longestRunningCall = logMessages.First (x => x.TimedInvocation.ElapsedTime == logMessages.Max (y => y.TimedInvocation.ElapsedTime));
 
-			var errorsInLastHour = logMessages.Count (x => x.Date > DateTime.Now.AddHours (-1) && x.Level == "ERROR");
+			//var errorsInLastHour = logMessages.Count (x => x.Date > DateTime.Now.AddHours (-1) && x.Level == "ERROR");
 
 		}
 
