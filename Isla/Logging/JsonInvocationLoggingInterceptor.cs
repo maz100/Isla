@@ -22,14 +22,27 @@ namespace Isla.Logging
 
 			var stopwatch = Stopwatch.StartNew ();
 
-			invocation.Proceed ();
+			Exception exception = null;
+
+			try {
+				invocation.Proceed ();				
+			} catch (Exception ex) {
+				exception = ex;
+			}
+
 
 			stopwatch.Stop ();
 
 			var timedInvocation = new TimedInvocation (invocation);
 			timedInvocation.ElapsedTime = stopwatch.Elapsed;
+			timedInvocation.Exception = exception;
 
 			var jsonTimedInvocation = JsonSerializer.Serialize (timedInvocation);
+
+			if (exception != null) {
+				logger.Error (jsonTimedInvocation);
+				throw exception;
+			}
 
 			logger.Info (jsonTimedInvocation);
 		}

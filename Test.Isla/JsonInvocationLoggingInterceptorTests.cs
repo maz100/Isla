@@ -64,13 +64,33 @@ namespace Test.Isla
 		{
 			var container = new WindsorContainer ();
 
-			container.Install (new IslaInstaller(), new TestInstaller());
+			container.Install (new IslaInstaller (), new TestInstaller ());
 
 			var someClass = container.Resolve<ISomeClass> ();
 
 			for (int i = 0; i < 10; i++) {
 				someClass.SomeMethod ("hello world");
 			}
+		}
+
+		[Test]
+		public void TestUsingInstaller_error ()
+		{
+			var container = new WindsorContainer ();
+
+			container.Install (new IslaInstaller (), new TestInstaller ());
+
+			var someClass = container.Resolve<ISomeClass> ();
+
+			var expectedErrorThrown = false;
+
+			try {
+				someClass.SomeMethod ("");
+			} catch (ArgumentNullException ex) {
+				expectedErrorThrown = true;
+			}
+
+			Assert.That (expectedErrorThrown);
 		}
 
 		[Test]
@@ -172,9 +192,9 @@ namespace Test.Isla
 				TimedInvocation = s.DeserializeFromString<TimedInvocation> (x.Message)
 			}).ToList ();
 
-			var searchResults = logMessages.Where (x => x.TimedInvocation.Arguments [0].Equals("hello world")).ToList();
+			var searchResults = logMessages.Where (x => x.TimedInvocation.Arguments [0].Equals ("hello world")).ToList ();
 
-			var longestRunningCall = logMessages.First(x=>x.TimedInvocation.ElapsedTime==logMessages.Max (y => y.TimedInvocation.ElapsedTime));
+			var longestRunningCall = logMessages.First (x => x.TimedInvocation.ElapsedTime == logMessages.Max (y => y.TimedInvocation.ElapsedTime));
 
 			var errorsInLastHour = logMessages.Count (x => x.Date > DateTime.Now.AddHours (-1) && x.Level == "ERROR");
 
