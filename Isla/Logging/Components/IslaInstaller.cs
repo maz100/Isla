@@ -3,6 +3,8 @@ using Castle.MicroKernel.Registration;
 using log4net.Config;
 using Isla.Logging.Components;
 using Isla.Logging;
+using Castle.Windsor;
+using Castle.MicroKernel.SubSystems.Configuration;
 
 namespace Isla
 {
@@ -20,7 +22,7 @@ namespace Isla
 
 		#region IWindsorInstaller implementation
 
-		public void Install (Castle.Windsor.IWindsorContainer container, Castle.MicroKernel.SubSystems.Configuration.IConfigurationStore store)
+		public void Install (IWindsorContainer container, IConfigurationStore store)
 		{
 			container.Register (
 

@@ -12,6 +12,11 @@ namespace Isla.Serialisation.Components
 
 		#region IJsonSerializer implementation
 
+		public T Deserialize<T> (string source)
+		{
+			throw new NotImplementedException ();
+		}
+
 		public string Serialize (TimedInvocation invocation)
 		{
 			using (JsConfig.With (timeSpanHandler: TimeSpanHandler.StandardFormat)) {

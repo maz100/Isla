@@ -54,6 +54,10 @@
     <Compile Include="Logging\JsonInvocationLoggingInterceptor.cs" />
     <Compile Include="Logging\RawLogMessage.cs" />
     <Compile Include="Logging\LogMessage.cs" />
+    <Compile Include="Components\IFileHelper.cs" />
+    <Compile Include="Logging\Components\ILogMessageBuilder.cs" />
+    <Compile Include="Logging\Components\ILogMessageFactory.cs" />
+    <Compile Include="Logging\Components\LogMessageFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -62,5 +66,6 @@
   <ItemGroup>
     <Folder Include="Logging\Components\" />
     <Folder Include="Serialisation\Components\" />
+    <Folder Include="Components\" />
   </ItemGroup>
 </Project>

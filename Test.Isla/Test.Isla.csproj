@@ -58,6 +58,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="FizzWare.NBuilder">
+      <HintPath>..\packages\NBuilder.3.0.1.1\lib\FizzWare.NBuilder.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="JsonInvocationLoggingInterceptorTests.cs" />
@@ -66,6 +69,9 @@
     <Compile Include="Serialisation\Components\ISomeClass.cs" />
     <Compile Include="Serialisation\Components\SomeClass.cs" />
     <Compile Include="TestInstaller.cs" />
+    <Compile Include="JsonLogReader.cs" />
+    <Compile Include="Serialisation\Components\JsonLogReaderTests.cs" />
+    <Compile Include="IJsonLogReader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
