@@ -16,8 +16,6 @@ namespace Isla
 		#region IWindsorInstaller implementation
 		public void Install (Castle.Windsor.IWindsorContainer container, Castle.MicroKernel.SubSystems.Configuration.IConfigurationStore store)
 		{
-			XmlConfigurator.Configure ();
-
 			container.Register(
 
 				Component.For<JsonInvocationLoggingInterceptor>(),

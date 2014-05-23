@@ -28,10 +28,14 @@ namespace Test.Isla
 	{
 		private JsonInvocationLoggingInterceptor _interceptor;
 
+		private WindsorContainer _container;
+
 		[SetUp]
 		public void SetUp ()
 		{
-			XmlConfigurator.Configure ();
+			_container = new WindsorContainer ();
+
+			_container.Install (new IslaInstaller (), new TestInstaller ());
 
 			_interceptor = MoqAutoMocker.CreateInstance<JsonInvocationLoggingInterceptor> ();
 		}
@@ -62,11 +66,7 @@ namespace Test.Isla
 		[Test]
 		public void TestUsingInstaller ()
 		{
-			var container = new WindsorContainer ();
-
-			container.Install (new IslaInstaller (), new TestInstaller ());
-
-			var someClass = container.Resolve<ISomeClass> ();
+			var someClass = _container.Resolve<ISomeClass> ();
 
 			for (int i = 0; i < 10; i++) {
 				someClass.SomeMethod ("hello world");
@@ -76,11 +76,7 @@ namespace Test.Isla
 		[Test]
 		public void TestUsingInstaller_error ()
 		{
-			var container = new WindsorContainer ();
-
-			container.Install (new IslaInstaller (), new TestInstaller ());
-
-			var someClass = container.Resolve<ISomeClass> ();
+			var someClass = _container.Resolve<ISomeClass> ();
 
 			var expectedErrorThrown = false;
 
