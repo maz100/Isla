@@ -10,20 +10,27 @@ namespace Isla
 	{
 		public IslaInstaller ()
 		{
-
+			if (!LogConfigured) {
+				XmlConfigurator.Configure ();
+				LogConfigured = true;
+			}
 		}
+
+		private static bool LogConfigured;
 
 		#region IWindsorInstaller implementation
+
 		public void Install (Castle.Windsor.IWindsorContainer container, Castle.MicroKernel.SubSystems.Configuration.IConfigurationStore store)
 		{
-			container.Register(
+			container.Register (
 
-				Component.For<JsonInvocationLoggingInterceptor>(),
+				Component.For<JsonInvocationLoggingInterceptor> (),
 
-				Classes.FromThisAssembly()
-				.Where(x=>x.Namespace.Contains("Components"))
-				.WithServiceFirstInterface());
+				Classes.FromThisAssembly ()
+				.Where (x => x.Namespace.Contains ("Components"))
+				.WithServiceFirstInterface ());
 		}
+
 		#endregion
 	}
 }
