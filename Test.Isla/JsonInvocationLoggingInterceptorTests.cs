@@ -27,7 +27,6 @@ namespace Test.Isla
 	public class JsonInvocationLoggingInterceptorTests
 	{
 		private JsonInvocationLoggingInterceptor _interceptor;
-
 		private WindsorContainer _container;
 
 		[SetUp]
@@ -210,6 +209,17 @@ namespace Test.Isla
 			var deserialisedInstance = JsonConvert.DeserializeObject<TimedInvocation> (serialisedInvocation);
 
 			Assert.AreEqual (timedInvocation.MethodName, deserialisedInstance.MethodName);
+		}
+
+		[Test, Category ("Example")]
+		public void TestDeserializeLogFile ()
+		{
+			var logReader = _container.Resolve<IJsonLogReader> ();
+
+			var logMessages = logReader.GetLogMessages ("log.txt");
+
+			var errors = logMessages.Where (x => x.Level == "ERROR")
+				.ToList ();
 		}
 	}
 }

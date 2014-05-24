@@ -1,29 +1,23 @@
 ﻿using System;
-using ServiceStack.Text;
 using Isla.Logging;
+using Newtonsoft.Json;
 
 namespace Isla.Serialisation.Components
 {
 	public class JsonSerializer: IJsonSerializer
 	{
-		public JsonSerializer ()
-		{
-		}
-
 		#region IJsonSerializer implementation
 
 		public T Deserialize<T> (string source)
 		{
-			throw new NotImplementedException ();
+			return JsonConvert.DeserializeObject<T> (source);
 		}
 
 		public string Serialize (TimedInvocation invocation)
 		{
-			using (JsConfig.With (timeSpanHandler: TimeSpanHandler.StandardFormat)) {
-				var serialiser = new JsonStringSerializer ();
-				var serialisedInvocation = serialiser.SerializeToString (invocation);
-				return serialisedInvocation;
-			}
+			var serialisedInvocation = JsonConvert.SerializeObject (invocation);
+
+			return serialisedInvocation;
 		}
 
 		#endregion

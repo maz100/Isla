@@ -35,7 +35,11 @@ namespace Isla.Logging
 
 			var timedInvocation = new TimedInvocation (invocation);
 			timedInvocation.ElapsedTime = stopwatch.Elapsed;
-			timedInvocation.Exception = exception;
+
+			if (exception != null) {
+				timedInvocation.ExceptionInfo = new ExceptionInfo (exception);
+
+			}
 
 			var jsonTimedInvocation = JsonSerializer.Serialize (timedInvocation);
 

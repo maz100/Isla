@@ -5,6 +5,8 @@ using Moq;
 using Castle.DynamicProxy;
 using NUnit;
 using NUnit.Framework;
+using ServiceStack.Text;
+using Newtonsoft.Json;
 
 namespace Test.Isla.Serialisation.Components
 {

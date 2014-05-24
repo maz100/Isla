@@ -12,7 +12,14 @@ namespace Isla.Logging.Components
 		#region ILogMessageBuilder implementation
 		public LogMessage Build (RawLogMessage rawLogMessage, TimedInvocation timedInvocation)
 		{
-			throw new NotImplementedException ();
+			var logMessage = new LogMessage ();
+
+			logMessage.Date = rawLogMessage.Date;
+			logMessage.Level = rawLogMessage.Level;
+			logMessage.Logger = rawLogMessage.Logger;
+			logMessage.TimedInvocation = timedInvocation;
+
+			return logMessage;
 		}
 		#endregion
 	}

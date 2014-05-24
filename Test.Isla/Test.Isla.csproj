@@ -69,10 +69,9 @@
     <Compile Include="Serialisation\Components\ISomeClass.cs" />
     <Compile Include="Serialisation\Components\SomeClass.cs" />
     <Compile Include="TestInstaller.cs" />
-    <Compile Include="JsonLogReader.cs" />
     <Compile Include="Serialisation\Components\JsonLogReaderTests.cs" />
-    <Compile Include="IJsonLogReader.cs" />
     <Compile Include="Logging\Components\LogMessageFactoryTests.cs" />
+    <Compile Include="Logging\Components\LogMessageBuilderTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

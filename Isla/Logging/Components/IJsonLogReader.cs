@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Isla.Logging;
 
 
-namespace Test.Isla
+namespace Isla.Logging.Components
 {
 	public interface IJsonLogReader
 	{

@@ -24,7 +24,7 @@ namespace Isla.Logging
 
 		public object ReturnValue { get; set; }
 
-		public Exception Exception  { get; set; }
+		public ExceptionInfo ExceptionInfo  { get; set; }
 
 		public TimeSpan ElapsedTime { get; set; }
 	}
