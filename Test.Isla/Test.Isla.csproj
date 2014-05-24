@@ -72,6 +72,7 @@
     <Compile Include="JsonLogReader.cs" />
     <Compile Include="Serialisation\Components\JsonLogReaderTests.cs" />
     <Compile Include="IJsonLogReader.cs" />
+    <Compile Include="Logging\Components\LogMessageFactoryTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -91,5 +92,7 @@
   <ItemGroup>
     <Folder Include="Serialisation\" />
     <Folder Include="Serialisation\Components\" />
+    <Folder Include="Logging\" />
+    <Folder Include="Logging\Components\" />
   </ItemGroup>
 </Project>

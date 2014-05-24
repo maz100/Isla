@@ -58,6 +58,7 @@
     <Compile Include="Logging\Components\ILogMessageBuilder.cs" />
     <Compile Include="Logging\Components\ILogMessageFactory.cs" />
     <Compile Include="Logging\Components\LogMessageFactory.cs" />
+    <Compile Include="Components\FileHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
