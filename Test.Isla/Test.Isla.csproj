@@ -83,6 +83,10 @@
       <Project>{7A7EEDCE-0406-49FB-A8CC-1D7A31BEA319}</Project>
       <Name>Isla</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Isla.Testing.Moq\Isla.Testing.Moq.csproj">
+      <Project>{9773E947-D6C4-4655-A22C-7BA84B9FB836}</Project>
+      <Name>Isla.Testing.Moq</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Serialisation\" />
