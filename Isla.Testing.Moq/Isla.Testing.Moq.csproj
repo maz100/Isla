@@ -49,7 +49,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Isla.csproj">
+    <ProjectReference Include="..\Isla\Isla.csproj">
       <Project>{7A7EEDCE-0406-49FB-A8CC-1D7A31BEA319}</Project>
       <Name>Isla</Name>
     </ProjectReference>

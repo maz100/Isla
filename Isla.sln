@@ -5,9 +5,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{28A7F0BD-3E0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Isla", "Isla\Isla.csproj", "{7A7EEDCE-0406-49FB-A8CC-1D7A31BEA319}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Isla.Testing", "Isla\Isla.Testing\Isla.Testing.csproj", "{75133565-7236-4184-B3F7-A4024A8F945C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Isla.Testing", "Isla.Testing\Isla.Testing.csproj", "{75133565-7236-4184-B3F7-A4024A8F945C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Isla.Testing.Moq", "Isla\Isla.Testing.Moq\Isla.Testing.Moq.csproj", "{9773E947-D6C4-4655-A22C-7BA84B9FB836}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Isla.Testing.Moq", "Isla.Testing.Moq\Isla.Testing.Moq.csproj", "{9773E947-D6C4-4655-A22C-7BA84B9FB836}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{707B4212-752A-4D2B-B9F8-B11784D0758A}"
 EndProject
