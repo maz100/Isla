@@ -1,5 +1,4 @@
 ﻿using System;
-using Test.Isla.Serialisation.Components;
 using System.IO;
 
 namespace Isla.Components
@@ -11,6 +10,11 @@ namespace Isla.Components
 		public string[] ReadAllLines (string path)
 		{
 			return File.ReadAllLines (path);
+		}
+
+		public void WriteAllLines (string path, string[] content)
+		{
+			File.WriteAllLines (path, content);
 		}
 
 		#endregion

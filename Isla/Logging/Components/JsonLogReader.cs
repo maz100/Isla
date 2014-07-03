@@ -1,8 +1,8 @@
-using Test.Isla.Serialisation.Components;
 using Isla.Logging.Components;
 using System.Collections.Generic;
 using Isla.Logging;
 using System.Linq;
+using Isla.Components;
 
 namespace Isla.Logging.Components
 {

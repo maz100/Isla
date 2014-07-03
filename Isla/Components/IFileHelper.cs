@@ -1,11 +1,13 @@
 using System;
 using System.Linq;
 
-namespace Test.Isla.Serialisation.Components
+namespace Isla.Components
 {
 	public interface IFileHelper
 	{
 		string[] ReadAllLines (string path);
+
+		void WriteAllLines(string path, string[] lines);
 	}
 }
 

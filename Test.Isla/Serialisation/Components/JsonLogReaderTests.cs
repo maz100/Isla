@@ -7,6 +7,7 @@ using Isla.Logging;
 using System.Collections.Generic;
 using FizzWare.NBuilder;
 using Isla.Logging.Components;
+using Isla.Components;
 
 namespace Test.Isla.Serialisation.Components
 {
