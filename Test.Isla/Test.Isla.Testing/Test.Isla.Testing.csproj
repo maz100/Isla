@@ -3,10 +3,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{75133565-7236-4184-B3F7-A4024A8F945C}</ProjectGuid>
+    <ProjectGuid>{00C796C4-5DD8-4748-891F-4B486EB564F0}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Isla.Testing</RootNamespace>
-    <AssemblyName>Isla.Testing</AssemblyName>
+    <RootNamespace>Test.Isla.Testing</RootNamespace>
+    <AssemblyName>Test.Isla.Testing</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,20 +28,31 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="nunit.framework" />
     <Reference Include="Castle.Core">
-      <HintPath>..\packages\Castle.Core.3.3.0\lib\net40-client\Castle.Core.dll</HintPath>
+      <HintPath>..\..\packages\Castle.Core.3.3.0\lib\net40-client\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Windsor">
-      <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net40\Castle.Windsor.dll</HintPath>
+      <HintPath>..\..\packages\Castle.Windsor.3.3.0\lib\net40\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CastleTestBase.cs" />
+    <Compile Include="Test.cs" />
+    <Compile Include="CastleTestBaseTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Isla.Testing\Isla.Testing.csproj">
+      <Project>{75133565-7236-4184-B3F7-A4024A8F945C}</Project>
+      <Name>Isla.Testing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Isla\Isla.csproj">
+      <Project>{7A7EEDCE-0406-49FB-A8CC-1D7A31BEA319}</Project>
+      <Name>Isla</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

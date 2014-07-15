@@ -12,6 +12,11 @@ namespace Isla.Components
 			return File.ReadAllLines (path);
 		}
 
+		public string ReadAllText (string path)
+		{
+			return File.ReadAllText (path);
+		}
+
 		public void WriteAllLines (string path, string[] content)
 		{
 			File.WriteAllLines (path, content);

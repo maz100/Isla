@@ -7,6 +7,8 @@ namespace Isla.Components
 	{
 		string[] ReadAllLines (string path);
 
+		string ReadAllText(string path);
+
 		void WriteAllLines(string path, string[] lines);
 	}
 }
