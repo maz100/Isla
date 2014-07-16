@@ -1,6 +1,8 @@
 Isla
 ====
 
+https://ci.appveyor.com/api/projects/status/j05g1l2n73nmftq0
+
 Some nice logging and testing capabilities built for Castle Windsor and Moq
 
 To date this includes a JSON logging interceptor.  When used with the log4net.ext.json layout log entries are entirely JSON.
