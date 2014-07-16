@@ -4,9 +4,9 @@ using System.Runtime.CompilerServices;
 // Information about this assembly is defined by the following attributes.
 // Change them to the values specific to your project.
 [assembly: AssemblyTitle ("Isla")]
-[assembly: AssemblyDescription ("")]
+[assembly: AssemblyDescription ("Isla offers niceness built on Castle Winsor")]
 [assembly: AssemblyConfiguration ("")]
-[assembly: AssemblyCompany ("")]
+[assembly: AssemblyCompany ("Maz100")]
 [assembly: AssemblyProduct ("")]
 [assembly: AssemblyCopyright ("marcziman")]
 [assembly: AssemblyTrademark ("")]
