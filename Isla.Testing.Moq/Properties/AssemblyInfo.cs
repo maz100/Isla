@@ -4,8 +4,8 @@ using System.Runtime.CompilerServices;
 // Information about this assembly is defined by the following attributes.
 // Change them to the values specific to your project.
 [assembly: AssemblyTitle ("Isla.Testing.Moq")]
-[assembly: AssemblyDescription ("")]
-[assembly: AssemblyConfiguration ("Isla.Testing.Moq offers moq testing niceness built on Castle Winsor")]
+[assembly: AssemblyDescription ("Isla.Testing.Moq offers moq testing niceness built on Castle Winsor")]
+[assembly: AssemblyConfiguration ("")]
 [assembly: AssemblyCompany ("Maz100")]
 [assembly: AssemblyProduct ("")]
 [assembly: AssemblyCopyright ("marcziman")]
