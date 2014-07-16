@@ -1,4 +1,4 @@
-Isla
+Isla <img src="https://ci.appveyor.com/api/projects/status/j05g1l2n73nmftq0">
 ====
 
 Some nice logging and testing capabilities built for Castle Windsor and Moq
