@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTitle ("Isla.Testing")]
 [assembly: AssemblyDescription ("")]
 [assembly: AssemblyConfiguration ("")]
-[assembly: AssemblyCompany ("")]
+[assembly: AssemblyCompany ("Maz100")]
 [assembly: AssemblyProduct ("")]
 [assembly: AssemblyCopyright ("marcziman")]
 [assembly: AssemblyTrademark ("")]
