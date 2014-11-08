@@ -62,6 +62,44 @@ namespace Test.Isla
 			_interceptor.VerifyAll ();
 		}
 
+        [Test()]
+        public void TestIntercept_HandlesErrorAndPreservesStackTrace()
+        {
+            var invocation = SetupInvocationMock();
+
+            invocation.Setup(x => x.Proceed()).Throws(createException());
+
+            //use a json serialiser to serialise the timed incovation
+            string serialisedTimedInvocation = "some serialised timespan";
+            _interceptor.Mock<IJsonSerializer>()
+                .Setup(x => x.Serialize(It.Is<TimedInvocation>(y => matchTimedInvocation(y, invocation.Object))))
+                .Returns(serialisedTimedInvocation);
+
+            //then use an ILog to log the serialised object at info level
+            var log = _interceptor.Create<ILog>();
+            string loggerName = new SomeClass().ToString();
+            _interceptor.Mock<ILogManager>().Setup(x => x.GetLogger(loggerName)).Returns(log.Object);
+            log.Setup(x => x.Info(serialisedTimedInvocation));
+
+            //method under test
+            try
+            {
+                _interceptor.Intercept(invocation.Object);
+            }
+            catch (ApplicationException ex)
+            {
+                Assert.IsNotNullOrEmpty(ex.StackTrace);
+                Assert.True(ex.StackTrace.Contains("Castle.Proxies.IInvocationProxy.Proceed()"));
+            }
+
+            _interceptor.VerifyAll();
+        }
+
+        private Exception createException()
+        {
+            return new ApplicationException();
+        }
+
 		[Test]
 		public void TestUsingInstaller ()
 		{
