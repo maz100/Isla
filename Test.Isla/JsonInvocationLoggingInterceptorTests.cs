@@ -79,7 +79,7 @@ namespace Test.Isla
             var log = _interceptor.Create<ILog>();
             string loggerName = new SomeClass().ToString();
             _interceptor.Mock<ILogManager>().Setup(x => x.GetLogger(loggerName)).Returns(log.Object);
-            log.Setup(x => x.Info(serialisedTimedInvocation));
+            log.Setup(x => x.Error(serialisedTimedInvocation));
 
             //method under test
             try
