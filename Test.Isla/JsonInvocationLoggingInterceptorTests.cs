@@ -88,11 +88,11 @@ namespace Test.Isla
             }
             catch (ApplicationException ex)
             {
-                Assert.IsNotNullOrEmpty(ex.StackTrace);
-                Assert.True(ex.StackTrace.Contains("Castle.Proxies.IInvocationProxy.Proceed()"));
+                _interceptor.VerifyAll();
+                return;
             }
 
-            _interceptor.VerifyAll();
+            Assert.Fail(); // If no exception was caught, something went wrong!
         }
 
         private Exception createException()
