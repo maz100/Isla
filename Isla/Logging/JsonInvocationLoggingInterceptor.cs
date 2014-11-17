@@ -30,7 +30,6 @@ namespace Isla.Logging
 				exception = ex;
 			}
 
-
 			stopwatch.Stop ();
 
 			var timedInvocation = new TimedInvocation (invocation);
@@ -38,7 +37,6 @@ namespace Isla.Logging
 
 			if (exception != null) {
 				timedInvocation.ExceptionInfo = new ExceptionInfo (exception);
-
 			}
 
 			var jsonTimedInvocation = JsonSerializer.Serialize (timedInvocation);

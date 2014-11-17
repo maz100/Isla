@@ -27,33 +27,10 @@ namespace Isla.Testing.Moq
 
 			return property.GetValue (value, null) as Mock<T>;
 		}
-
+        
 		public static void VerifyAll (this object instance)
 		{
-			PropertyInfo[] propertyInfos = instance.GetType ().GetProperties ();
-
-			foreach (var propertyInfo in propertyInfos) {
-				object value = propertyInfo.GetValue (instance, null);
-
-				if (value == null) {
-					continue;
-				}
-
-				//get its Mock property
-				var property = value.GetType ().GetProperties ().FirstOrDefault (x => x.Name == "Mock");
-
-				if (property == null) {
-					continue;
-				}
-
-				var mock = property.GetValue (value, null);
-
-				try {
-					mock.GetType ().GetMethod ("VerifyAll", Type.EmptyTypes).Invoke (mock, null);
-				} catch (TargetInvocationException ex) {
-					throw ex.InnerException;
-				}
-			}
+            instance.Mocks().VerifyAll();
 		}
 
 		//creates a new mock object which will be included in the call to VerifyAll
