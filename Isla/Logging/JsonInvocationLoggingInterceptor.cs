@@ -16,37 +16,44 @@ namespace Isla.Logging
 
 		#region IInterceptor implementation
 
-		public void Intercept (IInvocation invocation)
+        public void Intercept(IInvocation invocation)
 		{
-			var logger = LogManager.GetLogger (invocation.InvocationTarget.ToString ());
+            var logger = LogManager.GetLogger(invocation.InvocationTarget.ToString());
 
-			var stopwatch = Stopwatch.StartNew ();
+            var stopwatch = Stopwatch.StartNew();
 
 			Exception exception = null;
 
 			try {
-				invocation.Proceed ();				
-			} catch (Exception ex) {
+                invocation.Proceed();
+            }
+            catch (Exception ex) {
 				exception = ex;
+                throw; // Preserve the stack trace of the exception
 			}
+            finally {
+                stopwatch.Stop();
 
-			stopwatch.Stop ();
-
-			var timedInvocation = new TimedInvocation (invocation);
+                var timedInvocation = new TimedInvocation(invocation);
 			timedInvocation.ElapsedTime = stopwatch.Elapsed;
 
-			if (exception != null) {
-				timedInvocation.ExceptionInfo = new ExceptionInfo (exception);
+                if (exception != null)
+                {
+                    timedInvocation.ExceptionInfo = new ExceptionInfo(exception);
 			}
 
-			var jsonTimedInvocation = JsonSerializer.Serialize (timedInvocation);
+                var jsonTimedInvocation = JsonSerializer.Serialize(timedInvocation);
 
-			if (exception != null) {
-				logger.Error (jsonTimedInvocation);
-				throw exception;
+                // Log the final result
+                if (exception != null)
+                {
+                    logger.Error(jsonTimedInvocation);
+                }
+                else
+                {
+                    logger.Info(jsonTimedInvocation);
+                }
 			}
-
-			logger.Info (jsonTimedInvocation);
 		}
 
 		#endregion
