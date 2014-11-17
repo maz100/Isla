@@ -9,7 +9,7 @@ namespace Isla.Testing.Moq
 {
     public class MoqAutoMocker
     {
-        public static T CreateInstance<T>()
+        public static T CreateInstance<T>() where T : class
         {
             var mockRepositoryProvider = new MockRepositoryProvider();
             var generator = new ProxyGenerator();
@@ -17,8 +17,13 @@ namespace Isla.Testing.Moq
             options.AddMixinInstance(mockRepositoryProvider);
 
             var typeToInstantiate = typeof(T);
-
             var constructors = typeToInstantiate.GetConstructors();
+            var nonDefaultCtorCount = constructors.Count(x => x.GetParameters().Length > 0);
+
+            if (nonDefaultCtorCount > 1)
+            {
+                throw new MockInjectionException("Class has multiple non-default constructors, what to do?");
+            }
 
             var ctorCount = constructors.Count();
 
@@ -26,11 +31,10 @@ namespace Isla.Testing.Moq
 
             var nonDefaultCtor = constructors.FirstOrDefault(x => x.GetParameters().Length != 0);
 
-            T instance;
             var useDefaultCtor = ctorCount == 1 && defaultCtor != null;
-            var useNonDefaultCtor = ctorCount == 1 && nonDefaultCtor != null;
 
-            //class has one (default) constructor
+            T instance;
+
             if (useDefaultCtor)
             {
                 instance = (T)generator.CreateClassProxy(typeof(T), options);
@@ -38,31 +42,34 @@ namespace Isla.Testing.Moq
                 //if there are no constructor args, try property injection
                 InjectProperties<T>(instance);
             }
-
-            //class has one (non-default) constructor
-            else if (useNonDefaultCtor)
-            {
-                //try constructor injection
-                var ctorParams = nonDefaultCtor.GetParameters();
-
-                var mocks = mockRepositoryProvider.Mocks();
-
-                var ctorArgValues = new object[ctorParams.Length];
-
-                for (var i = 0; i < ctorParams.Length; i++)
-                {
-                    dynamic mock = InvocationHelper.InvokeGenericMethodWithDynamicTypeArguments(mocks, a => a.Create<object>(),
-                                                                                             null,
-                                                                                             ctorParams[i].ParameterType);
-                    ctorArgValues[i] = mock.Object;
-                }
-
-                instance = (T)generator.CreateClassProxy(typeof(T), options, ctorArgValues);
-            }
             else
             {
-                throw new ArgumentException("Class has multiple non-default constructors, what to do?");
+                instance = InjectNonDefaultConstructor<T>(nonDefaultCtor, mockRepositoryProvider, generator, options);    
             }
+            
+            return instance;
+        }
+
+        private static T InjectNonDefaultConstructor<T>(ConstructorInfo nonDefaultCtor,
+                                                        MockRepositoryProvider mockRepositoryProvider,
+                                                        ProxyGenerator generator,
+                                                        ProxyGenerationOptions options) where T : class
+        {
+            var ctorParams = nonDefaultCtor.GetParameters();
+
+            var mocks = mockRepositoryProvider.Mocks();
+
+            var ctorArgValues = new object[ctorParams.Length];
+
+            for (var i = 0; i < ctorParams.Length; i++)
+            {
+                dynamic mock = InvocationHelper.InvokeGenericMethodWithDynamicTypeArguments(mocks, a => a.Create<object>(),
+                                                                                         null,
+                                                                                         ctorParams[i].ParameterType);
+                ctorArgValues[i] = mock.Object;
+            }
+
+            var instance = (T)generator.CreateClassProxy(typeof(T), options, ctorArgValues);
 
             return instance;
         }
