@@ -9,23 +9,72 @@ namespace Isla.Testing.Moq
 {
     public class MoqAutoMocker
     {
-        public static T CreateInstance<T>() where T : new()
+        public static T CreateInstance<T>()
         {
             var mockRepositoryProvider = new MockRepositoryProvider();
             var generator = new ProxyGenerator();
             var options = new ProxyGenerationOptions();
             options.AddMixinInstance(mockRepositoryProvider);
 
-            var instance = (T) generator.CreateClassProxy(typeof (T), null, options);
+            var typeToInstantiate = typeof(T);
 
-            var propertyInfos = typeof (T).GetProperties().Where(x => x.PropertyType.IsInterface);
+            var constructors = typeToInstantiate.GetConstructors();
+
+            var ctorCount = constructors.Count();
+
+            var defaultCtor = constructors.FirstOrDefault(x => x.GetParameters().Length == 0);
+
+            var nonDefaultCtor = constructors.FirstOrDefault(x => x.GetParameters().Length != 0);
+
+            T instance;
+            var useDefaultCtor = ctorCount == 1 && defaultCtor != null;
+            var useNonDefaultCtor = ctorCount == 1 && nonDefaultCtor != null;
+
+            //class has one (default) constructor
+            if (useDefaultCtor)
+            {
+                instance = (T)generator.CreateClassProxy(typeof(T), options);
+
+                //if there are no constructor args, try property injection
+                InjectProperties<T>(instance);
+            }
+
+            //class has one (non-default) constructor
+            else if (useNonDefaultCtor)
+            {
+                //try constructor injection
+                var ctorParams = nonDefaultCtor.GetParameters();
+
+                var mocks = mockRepositoryProvider.Mocks();
+
+                var ctorArgValues = new object[ctorParams.Length];
+
+                for (var i = 0; i < ctorParams.Length; i++)
+                {
+                    dynamic mock = InvocationHelper.InvokeGenericMethodWithDynamicTypeArguments(mocks, a => a.Create<object>(),
+                                                                                             null,
+                                                                                             ctorParams[i].ParameterType);
+                    ctorArgValues[i] = mock.Object;
+                }
+
+                instance = (T)generator.CreateClassProxy(typeof(T), options, ctorArgValues);
+            }
+            else
+            {
+                throw new ArgumentException("Class has multiple non-default constructors, what to do?");
+            }
+
+            return instance;
+        }
+
+        private static void InjectProperties<T>(object instance)
+        {
+            var propertyInfos = typeof(T).GetProperties().Where(x => x.PropertyType.IsInterface);
 
             foreach (var propertyInfo in propertyInfos)
             {
                 InjectPropertyWithMock(propertyInfo, instance);
             }
-
-            return instance;
         }
 
         private static void InjectPropertyWithMock(PropertyInfo propertyInfo, object instance)
@@ -42,7 +91,7 @@ namespace Isla.Testing.Moq
                 return;
             }
 
-            propertyInfo.SetValue(instance, ((Mock) mock).Object, null);
+            propertyInfo.SetValue(instance, ((Mock)mock).Object, null);
         }
 
         public static class InvocationHelper

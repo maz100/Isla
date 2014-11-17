@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Reflection;
 using Moq;
 
 namespace Isla.Testing.Moq
@@ -7,11 +8,49 @@ namespace Isla.Testing.Moq
     {
         public static Mock<T> Mock<T>(this object instance) where T : class
         {
-            var propertyInfo = instance.GetType().GetProperties().FirstOrDefault(x => x.PropertyType == typeof (T));
+            Mock<T> mock;
+            mock = GetMockFromProperty<T>(instance);
+
+            if (mock != null) return mock;
+
+            mock = GetMockFromPrivateField<T>(instance);
+
+            return mock;
+        }
+
+        private static Mock<T> GetMockFromPrivateField<T>(object instance) where T : class
+        {
+            var type = instance.GetType().BaseType;
+
+            var fieldInfo = type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
+                .Where(x => x.FieldType == typeof(T))
+                .FirstOrDefault();
+
+            if (fieldInfo == null)
+            {
+                throw new MockInjectionException("Could not locate mock of requested type: " + typeof(T));
+            }
+
+            var value = fieldInfo.GetValue(instance);
+
+            //get its Mock property
+            var property = value.GetType().GetProperties().FirstOrDefault(x => x.Name == "Mock");
+
+            if (property == null)
+            {
+                throw new MockInjectionException("Could not locate mock of requested type: " + typeof(T));
+            }
+
+            return property.GetValue(value, null) as Mock<T>;
+        }
+
+        private static Mock<T> GetMockFromProperty<T>(object instance) where T : class
+        {
+            var propertyInfo = instance.GetType().GetProperties().FirstOrDefault(x => x.PropertyType == typeof(T));
 
             if (propertyInfo == null)
             {
-                throw new MockInjectionException("Could not locate mock of requested type: " + typeof (T));
+                return null;
             }
 
             //get the mocked interface
@@ -22,7 +61,7 @@ namespace Isla.Testing.Moq
 
             if (property == null)
             {
-                throw new MockInjectionException("Could not locate mock of requested type: " + typeof (T));
+                throw new MockInjectionException("Could not locate mock of requested type: " + typeof(T));
             }
 
             return property.GetValue(value, null) as Mock<T>;
