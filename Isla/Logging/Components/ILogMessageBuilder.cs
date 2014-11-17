@@ -1,27 +1,26 @@
-﻿using System;
-
-namespace Isla.Logging.Components
+﻿namespace Isla.Logging.Components
 {
-	public interface ILogMessageBuilder
-	{
-		LogMessage Build (RawLogMessage rawLogMessage, TimedInvocation timedInvocation);
-	}
+    public interface ILogMessageBuilder
+    {
+        LogMessage Build(RawLogMessage rawLogMessage, TimedInvocation timedInvocation);
+    }
 
-	public class LogMessageBuilder : ILogMessageBuilder
-	{
-		#region ILogMessageBuilder implementation
-		public LogMessage Build (RawLogMessage rawLogMessage, TimedInvocation timedInvocation)
-		{
-			var logMessage = new LogMessage ();
+    public class LogMessageBuilder : ILogMessageBuilder
+    {
+        #region ILogMessageBuilder implementation
 
-			logMessage.Date = rawLogMessage.Date;
-			logMessage.Level = rawLogMessage.Level;
-			logMessage.Logger = rawLogMessage.Logger;
-			logMessage.TimedInvocation = timedInvocation;
+        public LogMessage Build(RawLogMessage rawLogMessage, TimedInvocation timedInvocation)
+        {
+            var logMessage = new LogMessage();
 
-			return logMessage;
-		}
-		#endregion
-	}
+            logMessage.Date = rawLogMessage.Date;
+            logMessage.Level = rawLogMessage.Level;
+            logMessage.Logger = rawLogMessage.Logger;
+            logMessage.TimedInvocation = timedInvocation;
+
+            return logMessage;
+        }
+
+        #endregion
+    }
 }
-

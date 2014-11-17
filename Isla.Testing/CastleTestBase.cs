@@ -1,39 +1,34 @@
-﻿using System;
-using Castle.MicroKernel.Registration;
+﻿using Castle.MicroKernel.Registration;
 using Castle.Windsor;
-using System.Linq;
 
 namespace Isla.Testing
 {
-	public abstract class CastleTestBase
-	{
-		public CastleTestBase ()
-		{
-			var container = new WindsorContainer ();
+    public abstract class CastleTestBase
+    {
+        public CastleTestBase()
+        {
+            var container = new WindsorContainer();
 
-			container.Install (Installers);
+            container.Install(Installers);
 
-			foreach (var item in GetType().GetProperties()) {
+            foreach (var item in GetType().GetProperties())
+            {
+                var handlers = container.Kernel.GetAssignableHandlers(item.PropertyType);
 
-				var handlers = container.Kernel.GetAssignableHandlers (item.PropertyType);
+                if (handlers.Length == 0)
+                {
+                    continue;
+                }
 
-				if (handlers.Length == 0) {
-					continue;
-				}
+                var dependencyInstance = container.Resolve(item.PropertyType);
 
-				var dependencyInstance = container.Resolve (item.PropertyType);
-
-				item.SetValue (this, dependencyInstance, null);
-			}
-
-
-			
+                item.SetValue(this, dependencyInstance, null);
+            }
 
 
-			var constructors = GetType ().GetConstructors ();
-		}
+            var constructors = GetType().GetConstructors();
+        }
 
-		public abstract IWindsorInstaller[] Installers { get; }
-	}
+        public abstract IWindsorInstaller[] Installers { get; }
+    }
 }
-

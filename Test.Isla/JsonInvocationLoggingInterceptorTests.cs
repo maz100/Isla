@@ -1,70 +1,64 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using Castle.Core;
 using Castle.DynamicProxy;
-using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Isla;
 using Isla.Logging;
 using Isla.Logging.Components;
 using Isla.Serialisation.Components;
 using Isla.Testing.Moq;
-using Moq;
-using NUnit.Framework;
-using ServiceStack.Text;
 using log4net;
 using log4net.Config;
 using log4net.Layout;
-using Test.Isla.Serialisation.Components;
-using System.IO;
+using Moq;
 using Newtonsoft.Json;
-using JsonSerializer = Isla.Serialisation.Components.JsonSerializer;
-using LogManager = Isla.Logging.Components.LogManager;
+using NUnit.Framework;
+using ServiceStack.Text;
+using Test.Isla.Serialisation.Components;
 
 namespace Test.Isla
 {
-    [TestFixture()]
-	public class JsonInvocationLoggingInterceptorTests
-	{
-		private JsonInvocationLoggingInterceptor _interceptor;
-		private WindsorContainer _container;
+    [TestFixture]
+    public class JsonInvocationLoggingInterceptorTests
+    {
+        private WindsorContainer _container;
+        private JsonInvocationLoggingInterceptor _interceptor;
 
-		[SetUp]
+        [SetUp]
         public void SetUp()
-		{
+        {
             _container = new WindsorContainer();
 
             _container.Install(new IslaInstaller(), new TestInstaller());
 
             _interceptor = MoqAutoMocker.CreateInstance<JsonInvocationLoggingInterceptor>();
-		}
+        }
 
-        [Test()]
+        [Test]
         public void TestIntercept()
-		{
+        {
             var invocation = SetupInvocationMock();
 
-			//use a json serialiser to serialise the timed incovation
-			string serialisedTimedInvocation = "some serialised timespan";	
+            //use a json serialiser to serialise the timed incovation
+            var serialisedTimedInvocation = "some serialised timespan";
             _interceptor.Mock<IJsonSerializer>()
                 .Setup(x => x.Serialize(It.Is<TimedInvocation>(y => matchTimedInvocation(y, invocation.Object))))
                 .Returns(serialisedTimedInvocation);
-					
-			//then use an ILog to log the serialised object at info level
+
+            //then use an ILog to log the serialised object at info level
             var log = _interceptor.Create<ILog>();
-            string loggerName = new SomeClass().ToString();
+            var loggerName = new SomeClass().ToString();
             _interceptor.Mock<ILogManager>().Setup(x => x.GetLogger(loggerName)).Returns(log.Object);
             log.Setup(x => x.Info(serialisedTimedInvocation));
 
-			//method under test
+            //method under test
             _interceptor.Intercept(invocation.Object);
 
             _interceptor.VerifyAll();
-		}
+        }
 
-        [Test()]
+        [Test]
         public void TestIntercept_HandlesErrorAndPreservesStackTrace()
         {
             var invocation = SetupInvocationMock();
@@ -72,14 +66,14 @@ namespace Test.Isla
             invocation.Setup(x => x.Proceed()).Throws(createException());
 
             //use a json serialiser to serialise the timed incovation
-            string serialisedTimedInvocation = "some serialised timespan";
+            var serialisedTimedInvocation = "some serialised timespan";
             _interceptor.Mock<IJsonSerializer>()
                 .Setup(x => x.Serialize(It.Is<TimedInvocation>(y => matchTimedInvocation(y, invocation.Object))))
                 .Returns(serialisedTimedInvocation);
 
             //then use an ILog to log the serialised object at info level
             var log = _interceptor.Create<ILog>();
-            string loggerName = new SomeClass().ToString();
+            var loggerName = new SomeClass().ToString();
             _interceptor.Mock<ILogManager>().Setup(x => x.GetLogger(loggerName)).Returns(log.Object);
             log.Setup(x => x.Error(serialisedTimedInvocation));
 
@@ -102,23 +96,23 @@ namespace Test.Isla
             return new ApplicationException();
         }
 
-		[Test]
+        [Test]
         public void TestUsingInstaller()
-		{
+        {
             var someClass = _container.Resolve<ISomeClass>();
 
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 someClass.SomeMethod("hello world");
-			}
-		}
+            }
+        }
 
-		[Test]
+        [Test]
         public void TestUsingInstaller_error()
-		{
+        {
             var someClass = _container.Resolve<ISomeClass>();
 
-			var expectedErrorThrown = false;
+            var expectedErrorThrown = false;
 
             try
             {
@@ -126,19 +120,19 @@ namespace Test.Isla
             }
             catch (ArgumentNullException ex)
             {
-				expectedErrorThrown = true;
-			}
+                expectedErrorThrown = true;
+            }
 
             Assert.That(expectedErrorThrown);
-		}
+        }
 
-		[Test]
+        [Test]
         public void TestSerialize()
-		{
+        {
             var timedInvocation = new TimedInvocation();
-			timedInvocation.MethodName = "test method name";
-            timedInvocation.Arguments = new object[] { "hello", 3, DateTime.Now };
-			timedInvocation.ReturnValue = "test return value";
+            timedInvocation.MethodName = "test method name";
+            timedInvocation.Arguments = new object[] {"hello", 3, DateTime.Now};
+            timedInvocation.ReturnValue = "test return value";
             timedInvocation.ElapsedTime = new TimeSpan(1, 2, 3);
             var serialiser = new JsonStringSerializer();
             var serialisedInvocation = serialiser.SerializeToString(timedInvocation);
@@ -146,40 +140,42 @@ namespace Test.Isla
             var deserialisedInstance = serialiser.DeserializeFromString<TimedInvocation>(serialisedInvocation);
 
             Assert.AreEqual(timedInvocation.MethodName, deserialisedInstance.MethodName);
-		}
+        }
 
         private Mock<IInvocation> SetupInvocationMock()
-		{
+        {
             var invocation = _interceptor.Create<IInvocation>();
             invocation.Setup(x => x.InvocationTarget).Returns(new SomeClass());
-            invocation.Setup(x => x.Method).Returns(typeof(SomeClass).GetMethod("SomeMethod"));
-            invocation.Setup(x => x.Arguments).Returns(new object[] { "hello" });
+            invocation.Setup(x => x.Method).Returns(typeof (SomeClass).GetMethod("SomeMethod"));
+            invocation.Setup(x => x.Arguments).Returns(new object[] {"hello"});
             invocation.Setup(x => x.ReturnValue).Returns("hello");
 
             invocation.Setup(x => x.Proceed());
 
-			return invocation;
-		}
+            return invocation;
+        }
 
         private bool matchTimedInvocation(TimedInvocation y, IInvocation invocation)
-		{
-			return y.ElapsedTime != null &&
-			y.MethodName == invocation.Method.Name &&
-			y.Arguments == invocation.Arguments &&
-			y.ReturnValue == invocation.ReturnValue;
-		}
+        {
+            return y.ElapsedTime != null &&
+                   y.MethodName == invocation.Method.Name &&
+                   y.Arguments == invocation.Arguments &&
+                   y.ReturnValue == invocation.ReturnValue;
+        }
 
-		[Test]
+        [Test]
         public void TestMixins()
-		{
+        {
             var mockRepositoryProvider = new MockRepositoryProvider();
             var generator = new ProxyGenerator();
             var options = new ProxyGenerationOptions();
             options.AddMixinInstance(mockRepositoryProvider);
 
-            var x = (JsonInvocationLoggingInterceptor)generator.CreateClassProxy(typeof(JsonInvocationLoggingInterceptor), null, options);
+            var x =
+                (JsonInvocationLoggingInterceptor)
+                    generator.CreateClassProxy(typeof (JsonInvocationLoggingInterceptor), null, options);
 
-			var loggerName = "test logger";
+            var loggerName = "test logger";
 
             var expectedLog = x.Mocks().Of<ILog>().First();
 
@@ -192,7 +188,6 @@ namespace Test.Isla
             Assert.AreEqual(expectedLog, actualLog);
 
             x.Mocks().VerifyAll();
-
         }
 
         [Test]
@@ -213,37 +208,38 @@ namespace Test.Isla
 
             loggingInterceptor.Mock<ILogManager>().Setup(x => x.GetLogger(It.IsAny<string>())).Returns(logMock.Object);
 
-            ProxyGenerator generator = new ProxyGenerator();
+            var generator = new ProxyGenerator();
             var someClass = generator.CreateInterfaceProxyWithTarget(someClassMock.Object, loggingInterceptor);
 
             someClass.SomeMethod("hello world");
 
             loggingInterceptor.VerifyAll();
-		}
+        }
 
-		[Test]
+        [Test]
         public void TestJsonLayout()
-		{
-            SerializedLayout serializedLayout = new SerializedLayout();
-		}
+        {
+            var serializedLayout = new SerializedLayout();
+        }
 
-		[Test]
+        [Test]
         public void TestDeserialiseLogEntry()
-		{
-			var jsonLogEntry = @"{""date"":""2014-05-15T15:39:54.6832140+01:00"",""level"":""INFO"",""sitename"":""test-domain-Test.Isla.dll"",""logger"":""Test.Isla.Serialisation.Components.SomeClass"",""thread"":""TestRunnerThread"",""message"":""{\""MethodName\"":\""SomeMethod\"",\""Arguments\"":[\""hello world\""],\""ReturnValue\"":\""hello world\"",\""ElapsedTime\"":\""00:00:00.0003261\""}""}";
+        {
+            var jsonLogEntry =
+                @"{""date"":""2014-05-15T15:39:54.6832140+01:00"",""level"":""INFO"",""sitename"":""test-domain-Test.Isla.dll"",""logger"":""Test.Isla.Serialisation.Components.SomeClass"",""thread"":""TestRunnerThread"",""message"":""{\""MethodName\"":\""SomeMethod\"",\""Arguments\"":[\""hello world\""],\""ReturnValue\"":\""hello world\"",\""ElapsedTime\"":\""00:00:00.0003261\""}""}";
 
-            var s = new ServiceStack.Text.JsonStringSerializer();
+            var s = new JsonStringSerializer();
 
             var result = s.DeserializeFromString<RawLogMessage>(jsonLogEntry);
 
-			var message = result.Message;
+            var message = result.Message;
 
             var inv = s.DeserializeFromString<TimedInvocation>(message);
-		}
+        }
 
         [Test, Category("Example")]
         public void TestReadFromFile()
-		{
+        {
             var lines = File.ReadAllLines("log.txt");
 
             var s = new JsonStringSerializer();
@@ -252,27 +248,26 @@ namespace Test.Isla
 
             var logMessages = rawLogMessages.Select(x => new LogMessage
             {
-				Date = x.Date,
-				Level = x.Level,
-				Logger = x.Logger,
+                Date = x.Date,
+                Level = x.Level,
+                Logger = x.Logger,
                 TimedInvocation = s.DeserializeFromString<TimedInvocation>(x.Message)
             }).ToList();
 
             var searchResults = logMessages.Where(x => x.TimedInvocation.Arguments[0].Equals("hello world")).ToList();
 
-			//var longestRunningCall = logMessages.First (x => x.TimedInvocation.ElapsedTime == logMessages.Max (y => y.TimedInvocation.ElapsedTime));
+            //var longestRunningCall = logMessages.First (x => x.TimedInvocation.ElapsedTime == logMessages.Max (y => y.TimedInvocation.ElapsedTime));
 
-			//var errorsInLastHour = logMessages.Count (x => x.Date > DateTime.Now.AddHours (-1) && x.Level == "ERROR");
+            //var errorsInLastHour = logMessages.Count (x => x.Date > DateTime.Now.AddHours (-1) && x.Level == "ERROR");
+        }
 
-		}
-
-		[Test]
+        [Test]
         public void TestSerializeUsingJsonNet()
-		{
+        {
             var timedInvocation = new TimedInvocation();
-			timedInvocation.MethodName = "test method name";
-            timedInvocation.Arguments = new object[] { "hello", 3, DateTime.Now };
-			timedInvocation.ReturnValue = "test return value";
+            timedInvocation.MethodName = "test method name";
+            timedInvocation.Arguments = new object[] {"hello", 3, DateTime.Now};
+            timedInvocation.ReturnValue = "test return value";
             timedInvocation.ElapsedTime = new TimeSpan(1, 2, 3);
 
             var serialisedInvocation = JsonConvert.SerializeObject(timedInvocation);
@@ -280,18 +275,17 @@ namespace Test.Isla
             var deserialisedInstance = JsonConvert.DeserializeObject<TimedInvocation>(serialisedInvocation);
 
             Assert.AreEqual(timedInvocation.MethodName, deserialisedInstance.MethodName);
-		}
+        }
 
         [Test, Category("Example")]
         public void TestDeserializeLogFile()
-		{
+        {
             var logReader = _container.Resolve<IJsonLogReader>();
 
             var logMessages = logReader.GetLogMessages("log.txt");
 
             var errors = logMessages.Where(x => x.Level == "ERROR")
                 .ToList();
-		}
-	}
+        }
+    }
 }
-

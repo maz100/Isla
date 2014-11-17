@@ -2,19 +2,19 @@ using Moq;
 
 public class MockRepositoryProvider : IMockRepositoryProvider
 {
-	#region IMockRepositoryProvider implementation
+    #region IMockRepositoryProvider implementation
 
-	private MockRepository _mocks;
+    private readonly MockRepository _mocks;
 
-	public MockRepositoryProvider ()
-	{
-		_mocks = new MockRepository(MockBehavior.Default);
-	}
+    public MockRepositoryProvider()
+    {
+        _mocks = new MockRepository(MockBehavior.Default);
+    }
 
-	public MockRepository Mocks ()
-	{
-		return _mocks;
-	}
+    public MockRepository Mocks()
+    {
+        return _mocks;
+    }
 
-	#endregion
+    #endregion
 }

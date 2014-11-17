@@ -1,10 +1,7 @@
-﻿using System;
-
-namespace Isla.Logging.Components
+﻿namespace Isla.Logging.Components
 {
-	public interface ILogMessageFactory
-	{
-		LogMessage Create (string logEventText);
-	}
+    public interface ILogMessageFactory
+    {
+        LogMessage Create(string logEventText);
+    }
 }
-

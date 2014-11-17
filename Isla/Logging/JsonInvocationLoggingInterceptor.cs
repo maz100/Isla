@@ -1,46 +1,46 @@
 ﻿using System;
-using Castle.DynamicProxy;
 using System.Diagnostics;
-using log4net;
-using Isla.Serialisation.Components;
+using Castle.DynamicProxy;
 using Isla.Logging.Components;
-using ServiceStack.Text;
+using Isla.Serialisation.Components;
 
 namespace Isla.Logging
 {
-	public class JsonInvocationLoggingInterceptor : IInterceptor
-	{
-		public IJsonSerializer JsonSerializer { get; set; }
+    public class JsonInvocationLoggingInterceptor : IInterceptor
+    {
+        public IJsonSerializer JsonSerializer { get; set; }
+        public ILogManager LogManager { get; set; }
 
-		public ILogManager LogManager { get; set; }
-
-		#region IInterceptor implementation
+        #region IInterceptor implementation
 
         public void Intercept(IInvocation invocation)
-		{
+        {
             var logger = LogManager.GetLogger(invocation.InvocationTarget.ToString());
 
             var stopwatch = Stopwatch.StartNew();
 
-			Exception exception = null;
+            Exception exception = null;
 
-			try {
+            try
+            {
                 invocation.Proceed();
             }
-            catch (Exception ex) {
-				exception = ex;
+            catch (Exception ex)
+            {
+                exception = ex;
                 throw; // Preserve the stack trace of the exception
-			}
-            finally {
+            }
+            finally
+            {
                 stopwatch.Stop();
 
                 var timedInvocation = new TimedInvocation(invocation);
-			timedInvocation.ElapsedTime = stopwatch.Elapsed;
+                timedInvocation.ElapsedTime = stopwatch.Elapsed;
 
                 if (exception != null)
                 {
                     timedInvocation.ExceptionInfo = new ExceptionInfo(exception);
-			}
+                }
 
                 var jsonTimedInvocation = JsonSerializer.Serialize(timedInvocation);
 
@@ -53,10 +53,9 @@ namespace Isla.Logging
                 {
                     logger.Info(jsonTimedInvocation);
                 }
-			}
-		}
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }
-

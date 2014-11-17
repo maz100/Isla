@@ -2,5 +2,5 @@
 
 public interface IMockRepositoryProvider
 {
-	MockRepository Mocks ();
+    MockRepository Mocks();
 }

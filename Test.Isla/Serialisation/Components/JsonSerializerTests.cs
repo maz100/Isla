@@ -1,50 +1,38 @@
 ﻿using System;
-using Isla;
-using Moq;
-using Castle.DynamicProxy;
-using NUnit;
-using NUnit.Framework;
 using Isla.Logging;
+using NUnit.Framework;
 using ServiceStack.Text;
 using JsonSerializer = Isla.Serialisation.Components.JsonSerializer;
 
 namespace Test.Isla.Serialisation.Components
 {
-	[TestFixture]
-	public class JsonSerializerTests
-	{
-		private JsonSerializer _jsonSerializer;
+    [TestFixture]
+    public class JsonSerializerTests
+    {
+        private JsonSerializer _jsonSerializer;
 
-		public JsonSerializerTests ()
-		{
-		}
+        [Test]
+        public void TestSerialise()
+        {
+            using (JsConfig.With(timeSpanHandler: TimeSpanHandler.StandardFormat, dateHandler: DateHandler.ISO8601))
+            {
+                _jsonSerializer = new JsonSerializer();
+                var timedInvocation = new TimedInvocation();
+                timedInvocation.ElapsedTime = new TimeSpan(1, 10, 25);
+                //timedInvocation.Invocation = null;
 
-		[Test]
-		public void TestSerialise ()
-		{
-		    using (JsConfig.With(timeSpanHandler: TimeSpanHandler.StandardFormat, dateHandler:DateHandler.ISO8601))
-		    {
-		        _jsonSerializer = new JsonSerializer();
-		        TimedInvocation timedInvocation = new TimedInvocation();
-		        timedInvocation.ElapsedTime = new TimeSpan(1, 10, 25);
-		        //timedInvocation.Invocation = null;
+                var json = _jsonSerializer.Serialize(timedInvocation);
 
-		        var json = _jsonSerializer.Serialize(timedInvocation);
+                var jsonSerialiser = new JsonSerializer<TimeSpan>();
 
-		        var jsonSerialiser = new ServiceStack.Text.JsonSerializer<TimeSpan>();
+                var serialisedTimespan = jsonSerialiser.SerializeToString(new TimeSpan(1, 2, 3));
 
-		        string serialisedTimespan = jsonSerialiser.SerializeToString(new TimeSpan(1, 2, 3));
+                var typeSerialiser = new TypeSerializer<TimeSpan>();
 
-		        var typeSerialiser = new ServiceStack.Text.TypeSerializer<TimeSpan>();
+                var typeSerialiedTimespan = typeSerialiser.SerializeToString(new TimeSpan(1, 2, 3));
 
-		        string typeSerialiedTimespan = typeSerialiser.SerializeToString(new TimeSpan(1, 2, 3));
-
-		        string serialize = new JsonSerializer<DateTime>().SerializeToString(DateTime.Now);
-		    }
-		}
-	}
-
-
-
+                var serialize = new JsonSerializer<DateTime>().SerializeToString(DateTime.Now);
+            }
+        }
+    }
 }
-

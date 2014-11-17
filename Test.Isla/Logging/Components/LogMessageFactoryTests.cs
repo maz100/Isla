@@ -1,47 +1,47 @@
-﻿using NUnit.Framework;
-using System;
-using Isla.Testing.Moq;
+﻿using FizzWare.NBuilder;
+using Isla.Logging;
 using Isla.Logging.Components;
 using Isla.Serialisation.Components;
-using FizzWare.NBuilder;
-using Isla.Logging;
+using Isla.Testing.Moq;
+using NUnit.Framework;
 
 namespace Test.Isla.Logging.Components
 {
-	[TestFixture ()]
-	public class LogMessageFactoryTests
-	{
-		private LogMessageFactory _logMessageFactory;
+    [TestFixture]
+    public class LogMessageFactoryTests
+    {
+        private LogMessageFactory _logMessageFactory;
 
-		[SetUp]
-		public void SetUp ()
-		{
-			_logMessageFactory = MoqAutoMocker.CreateInstance<LogMessageFactory> ();
-		}
+        [SetUp]
+        public void SetUp()
+        {
+            _logMessageFactory = MoqAutoMocker.CreateInstance<LogMessageFactory>();
+        }
 
-		[Test ()]
-		public void TestCreate ()
-		{
-			string logMessageText = "test log message";
+        [Test]
+        public void TestCreate()
+        {
+            var logMessageText = "test log message";
 
-			RawLogMessage rawLogMessage = Builder<RawLogMessage>.CreateNew ().Build ();
+            var rawLogMessage = Builder<RawLogMessage>.CreateNew().Build();
 
-			TimedInvocation timedInvocation = Builder<TimedInvocation>.CreateNew ().Build ();
+            var timedInvocation = Builder<TimedInvocation>.CreateNew().Build();
 
-			LogMessage expectedlogMessage = Builder<LogMessage>.CreateNew ().Build ();
+            var expectedlogMessage = Builder<LogMessage>.CreateNew().Build();
 
-			var s = _logMessageFactory.Mock<IJsonSerializer> ();
+            var s = _logMessageFactory.Mock<IJsonSerializer>();
 
-			s.Setup (x => x.Deserialize<RawLogMessage> (logMessageText)).Returns (rawLogMessage);
+            s.Setup(x => x.Deserialize<RawLogMessage>(logMessageText)).Returns(rawLogMessage);
 
-			s.Setup (x => x.Deserialize<TimedInvocation> (rawLogMessage.Message)).Returns (timedInvocation);
+            s.Setup(x => x.Deserialize<TimedInvocation>(rawLogMessage.Message)).Returns(timedInvocation);
 
-			_logMessageFactory.Mock<ILogMessageBuilder> ().Setup (x => x.Build (rawLogMessage, timedInvocation)).Returns (expectedlogMessage);
+            _logMessageFactory.Mock<ILogMessageBuilder>()
+                .Setup(x => x.Build(rawLogMessage, timedInvocation))
+                .Returns(expectedlogMessage);
 
-			var actualLogMessage = _logMessageFactory.Create (logMessageText);
+            var actualLogMessage = _logMessageFactory.Create(logMessageText);
 
-			Assert.AreEqual (expectedlogMessage, actualLogMessage);
-		}
-	}
+            Assert.AreEqual(expectedlogMessage, actualLogMessage);
+        }
+    }
 }
-
