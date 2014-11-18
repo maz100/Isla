@@ -1,6 +1,6 @@
 namespace Test.Isla.Testing.Moq
 {
-    public class SomeClass
+    public class SomeClass : ISomeClass
     {
         private ISomeDependency1 _someDependency1;
         private ISomeDependency2 _someDependency2;

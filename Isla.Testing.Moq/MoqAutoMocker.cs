@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Castle.DynamicProxy;
+using Castle.DynamicProxy.Generators;
 using Isla.Logging;
 using Isla.Logging.Components;
 using Isla.Serialisation.Components;
@@ -15,6 +17,21 @@ namespace Isla.Testing.Moq
     {
         private IList<IInterceptor> _interceptors;
 
+
+        public TInterface ProxyInstance<TInterface, TClass>()
+            where TClass : class, TInterface
+            where TInterface : class
+        {
+            var generator = new ProxyGenerator();
+            var options = new ProxyGenerationOptions();
+
+            var instance = CreateInstance<TClass>();
+
+            var result = generator.CreateInterfaceProxyWithTarget<TInterface>(instance, options, Interceptors.ToArray());
+
+            return result;
+        }
+        
         public static T CreateInstance<T>() where T : class
         {
             var mockRepositoryProvider = new MockRepositoryProvider();
@@ -133,19 +150,9 @@ namespace Isla.Testing.Moq
             set { _interceptors = value; }
         }
 
-        public static MoqAutoMocker EnableLogging()
+        public static MoqAutoMocker Configure()
         {
-            var autoMocker = new MoqAutoMocker();
-
-            var logger = new JsonInvocationLoggingInterceptor
-            {
-                JsonSerializer = new JsonSerializer(),
-                LogManager = new LogManager()
-            };
-
-            autoMocker.Interceptors.Add(logger);
-
-            return autoMocker;
+            return new MoqAutoMocker();
         }
     }
 }

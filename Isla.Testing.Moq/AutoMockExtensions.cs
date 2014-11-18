@@ -1,5 +1,9 @@
 ﻿using System.Linq;
 using System.Reflection;
+using Castle.DynamicProxy;
+using Isla.Logging;
+using Isla.Logging.Components;
+using Isla.Serialisation.Components;
 using Moq;
 
 namespace Isla.Testing.Moq
@@ -83,6 +87,25 @@ namespace Isla.Testing.Moq
         {
             var mocksProvider = instance as IMockRepositoryProvider;
             return mocksProvider.Mocks();
+        }
+
+        public static MoqAutoMocker EnableLogging(this MoqAutoMocker instance)
+        {
+            var logger = new JsonInvocationLoggingInterceptor
+            {
+                JsonSerializer = new JsonSerializer(),
+                LogManager = new LogManager()
+            };
+
+            instance.Interceptors.Add(logger);
+
+            return instance;
+        }
+
+        public static MoqAutoMocker AddInterceptor(this MoqAutoMocker instance, IInterceptor interceptor)
+        {
+            instance.Interceptors.Add(interceptor);
+            return instance;
         }
     }
 }
