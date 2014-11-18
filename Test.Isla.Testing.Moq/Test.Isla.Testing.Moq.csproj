@@ -52,8 +52,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ISomeClass.cs" />
+    <Compile Include="ISomeDependency1.cs" />
+    <Compile Include="ISomeDependency2.cs" />
     <Compile Include="MoqAutoMockerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SomeClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

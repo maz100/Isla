@@ -49,6 +49,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Logging\Components\LogMessageBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logging\TimedInvocation.cs" />
     <Compile Include="Logging\Components\ILogManager.cs" />
