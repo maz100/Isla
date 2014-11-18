@@ -1,14 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Castle.DynamicProxy;
+using Isla.Logging;
+using Isla.Logging.Components;
+using Isla.Serialisation.Components;
 using Moq;
 
 namespace Isla.Testing.Moq
 {
     public class MoqAutoMocker
     {
+        private IList<IInterceptor> _interceptors;
+
         public static T CreateInstance<T>() where T : class
         {
             var mockRepositoryProvider = new MockRepositoryProvider();
@@ -44,9 +50,9 @@ namespace Isla.Testing.Moq
             }
             else
             {
-                instance = InjectNonDefaultConstructor<T>(nonDefaultCtor, mockRepositoryProvider, generator, options);    
+                instance = InjectNonDefaultConstructor<T>(nonDefaultCtor, mockRepositoryProvider, generator, options);
             }
-            
+
             return instance;
         }
 
@@ -119,6 +125,27 @@ namespace Isla.Testing.Moq
                     .MakeGenericMethod(typeArguments)
                     .Invoke(target, methodArguments);
             }
+        }
+
+        public IList<IInterceptor> Interceptors
+        {
+            get { return _interceptors ?? (_interceptors = new List<IInterceptor>()); }
+            set { _interceptors = value; }
+        }
+
+        public static MoqAutoMocker EnableLogging()
+        {
+            var autoMocker = new MoqAutoMocker();
+
+            var logger = new JsonInvocationLoggingInterceptor
+            {
+                JsonSerializer = new JsonSerializer(),
+                LogManager = new LogManager()
+            };
+
+            autoMocker.Interceptors.Add(logger);
+
+            return autoMocker;
         }
     }
 }
