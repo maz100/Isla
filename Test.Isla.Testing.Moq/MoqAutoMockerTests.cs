@@ -9,6 +9,8 @@ using Isla.Testing.Moq;
 using log4net.Config;
 using Moq;
 using NUnit.Framework;
+using Isla.Serialisation.Components;
+using Isla.Logging.Components;
 
 namespace Test.Isla.Testing.Moq
 {
@@ -29,7 +31,7 @@ namespace Test.Isla.Testing.Moq
             someClass.Mock<ISomeDependency1>().Setup(x => x.SomeMethod1());
             someClass.Mock<ISomeDependency2>().Setup(x => x.SomeMethod2());
 
-            someClass.SomeMethod();
+            someClass.SomeMethod("hello world");
 
             someClass.VerifyAll();
         }
@@ -46,9 +48,9 @@ namespace Test.Isla.Testing.Moq
         public void TestCreateInstance_as_proxy()
         {
             XmlConfigurator.Configure();
-            var result = MoqAutoMocker.Configure().EnableLogging().ProxyInstance<ISomeClass, SomeClass>();
-            Assert.That(result.GetType().Name == "ISomeClassProxy");
-            result.SomeMethod();
+            var proxiedInstance = MoqAutoMocker.Configure().EnableLogging().ProxyInstance<ISomeClass, SomeClass>();
+            Assert.That(proxiedInstance.GetType().Name == "ISomeClassProxy");
+            var result = proxiedInstance.SomeMethod("hello world");
         }
 
         [Test]
@@ -60,13 +62,58 @@ namespace Test.Isla.Testing.Moq
             var someClassProxy = MoqAutoMocker
                 .Configure()
                 .AddInterceptor(mockInterceptor.Object)
-                .ProxyInstance<ISomeClass,SomeClass>();
+                .ProxyInstance<ISomeClass, SomeClass>();
 
-            someClassProxy.SomeMethod();
+            someClassProxy.SomeMethod("hello world");
 
             mockInterceptor.VerifyAll();
         }
 
-        //do properties get injected
+        [Test]
+        public void TestProxyInstance_with_logging_enabled_intercepts_mocked_dependencies()
+        {
+            var mockInterceptor = new Mock<IInterceptor>();
+            mockInterceptor.Setup(x => x.Intercept(It.IsAny<IInvocation>())).Callback<IInvocation>(x=>x.Proceed());
+
+            var someClassProxy = MoqAutoMocker
+                .Configure()
+                .AddInterceptor(mockInterceptor.Object)
+                .ProxyInstance<ISomeClass, SomeClass>();
+
+            var result = someClassProxy.SomeMethod("hello world");
+
+            //should be called 3 times, once for automocked instance
+            //and once for each of its two dependencies
+            mockInterceptor.Verify(x => x.Intercept(It.IsAny<IInvocation>()), Times.Exactly(3));
+        }
+
+        [Test]
+        public void Test_proxy_dynamically_instantiated_mock()
+        {
+            var mocks = new MockRepository(MockBehavior.Default);
+
+            var someClassMock = global::Isla.Testing.Moq.MoqAutoMocker.InvocationHelper
+                .InvokeGenericMethodWithDynamicTypeArguments(mocks, a => a.Create<object>(),
+                                                                         null,
+                                                                         typeof(ISomeClass));
+            var loggingInterceptor = new JsonInvocationLoggingInterceptor
+            {
+                JsonSerializer = new JsonSerializer(),
+                LogManager = new LogManager()
+            };
+
+            var generator = new ProxyGenerator();
+
+            var mockObject = someClassMock.GetType().GetProperties()[0].GetValue(someClassMock, null);
+
+            var mockObjectType = mockObject.GetType();
+
+            var targetInterface = mockObjectType.GetInterfaces()[0];
+
+            var proxiedMockObject = generator.CreateInterfaceProxyWithTarget(targetInterface, mockObject, loggingInterceptor);
+
+        }
+
+        //do properties get injected 
     }
 }

@@ -25,14 +25,19 @@ namespace Isla.Testing.Moq
             var generator = new ProxyGenerator();
             var options = new ProxyGenerationOptions();
 
-            var instance = CreateInstance<TClass>();
+            var instance = CreateInstance<TClass>(Interceptors.ToArray());
 
             var result = generator.CreateInterfaceProxyWithTarget<TInterface>(instance, options, Interceptors.ToArray());
 
             return result;
         }
-        
+
         public static T CreateInstance<T>() where T : class
+        {
+            return CreateInstance<T>(null);
+        }
+
+        public static T CreateInstance<T>(params IInterceptor[] interceptors) where T : class
         {
             var mockRepositoryProvider = new MockRepositoryProvider();
             var generator = new ProxyGenerator();
@@ -60,24 +65,25 @@ namespace Isla.Testing.Moq
 
             if (useDefaultCtor)
             {
-                instance = (T)generator.CreateClassProxy(typeof(T), options);
+                instance = (T)generator.CreateClassProxy(typeof(T), options, interceptors);
 
                 //if there are no constructor args, try property injection
                 InjectProperties<T>(instance);
             }
             else
             {
-                instance = InjectNonDefaultConstructor<T>(nonDefaultCtor, mockRepositoryProvider, generator, options);
+                instance = InjectNonDefaultConstructor<T>(nonDefaultCtor, mockRepositoryProvider, generator, options, interceptors);
             }
 
             return instance;
         }
 
-        private static T InjectNonDefaultConstructor<T>(ConstructorInfo nonDefaultCtor,
-                                                        MockRepositoryProvider mockRepositoryProvider,
-                                                        ProxyGenerator generator,
-                                                        ProxyGenerationOptions options) where T : class
+        private static T InjectNonDefaultConstructor<T>(ConstructorInfo nonDefaultCtor, MockRepositoryProvider mockRepositoryProvider, ProxyGenerator generator, ProxyGenerationOptions options, IInterceptor[] interceptors) where T : class
         {
+            if (interceptors == null)
+            {
+                interceptors = new IInterceptor[0];
+            }
             var ctorParams = nonDefaultCtor.GetParameters();
 
             var mocks = mockRepositoryProvider.Mocks();
@@ -89,10 +95,13 @@ namespace Isla.Testing.Moq
                 dynamic mock = InvocationHelper.InvokeGenericMethodWithDynamicTypeArguments(mocks, a => a.Create<object>(),
                                                                                          null,
                                                                                          ctorParams[i].ParameterType);
-                ctorArgValues[i] = mock.Object;
+
+                dynamic proxiedMock = generator.CreateInterfaceProxyWithTarget(ctorParams[i].ParameterType, mock.Object, interceptors);
+
+                ctorArgValues[i] = proxiedMock;
             }
 
-            var instance = (T)generator.CreateClassProxy(typeof(T), options, ctorArgValues);
+            var instance = (T)generator.CreateClassProxy(typeof(T), options, ctorArgValues, interceptors);
 
             return instance;
         }

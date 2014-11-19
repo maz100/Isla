@@ -11,10 +11,12 @@ namespace Test.Isla.Testing.Moq
             _someDependency2 = someDependency2;
         }
 
-        public void SomeMethod()
+        public string SomeMethod(string message)
         {
             _someDependency1.SomeMethod1();
             _someDependency2.SomeMethod2();
+
+            return message;
         }
     }
 }

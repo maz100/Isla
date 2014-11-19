@@ -42,6 +42,14 @@ namespace Isla.Testing.Moq
 
             if (property == null)
             {
+                //this gets the mock from a proxied instance
+                var unproxiedInstance = Castle.DynamicProxy.ProxyUtil.GetUnproxiedInstance(value);
+                property = unproxiedInstance.GetType().GetProperties().FirstOrDefault(x => x.Name == "Mock");
+                value = unproxiedInstance;
+            }
+
+            if (property == null)
+            {
                 throw new MockInjectionException("Could not locate mock of requested type: " + typeof(T));
             }
 
@@ -51,6 +59,11 @@ namespace Isla.Testing.Moq
         private static Mock<T> GetMockFromProperty<T>(object instance) where T : class
         {
             var propertyInfo = instance.GetType().GetProperties().FirstOrDefault(x => x.PropertyType == typeof(T));
+
+            if (propertyInfo == null)
+            {
+                propertyInfo = instance.GetType().BaseType.GetProperties().FirstOrDefault(x => x.PropertyType == typeof(T));
+            }
 
             if (propertyInfo == null)
             {
