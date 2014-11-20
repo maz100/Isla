@@ -3,6 +3,8 @@ using System.Diagnostics;
 using Castle.DynamicProxy;
 using Isla.Logging.Components;
 using Isla.Serialisation.Components;
+using log4net.Config;
+using L4nLogManager = log4net.LogManager;
 
 namespace Isla.Logging
 {
@@ -15,8 +17,13 @@ namespace Isla.Logging
 
         public void Intercept(IInvocation invocation)
         {
-            var logger = LogManager.GetLogger(invocation.InvocationTarget.GetType().Name.ToString());
+            if (!L4nLogManager.GetRepository().Configured)
+            {
+                XmlConfigurator.Configure();
+            }
 
+            var logger = LogManager.GetLogger(invocation.InvocationTarget.GetType().Name.ToString());
+                        
             var stopwatch = Stopwatch.StartNew();
 
             Exception exception = null;

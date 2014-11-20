@@ -34,7 +34,7 @@ namespace Isla.Testing.Moq
 
         public static T CreateInstance<T>() where T : class
         {
-            return CreateInstance<T>(null);
+            return CreateInstance<T>(new IInterceptor[0]);
         }
 
         public static T CreateInstance<T>(params IInterceptor[] interceptors) where T : class
@@ -68,7 +68,7 @@ namespace Isla.Testing.Moq
                 instance = (T)generator.CreateClassProxy(typeof(T), options, interceptors);
 
                 //if there are no constructor args, try property injection
-                InjectProperties<T>(instance);
+                InjectProperties<T>(instance, interceptors);
             }
             else
             {
@@ -106,18 +106,23 @@ namespace Isla.Testing.Moq
             return instance;
         }
 
-        private static void InjectProperties<T>(object instance)
+        private static void InjectProperties<T>(object instance, params IInterceptor[] interceptors)
         {
             var propertyInfos = typeof(T).GetProperties().Where(x => x.PropertyType.IsInterface);
 
             foreach (var propertyInfo in propertyInfos)
             {
-                InjectPropertyWithMock(propertyInfo, instance);
+                InjectPropertyWithMock(propertyInfo, instance, interceptors);
             }
         }
 
-        private static void InjectPropertyWithMock(PropertyInfo propertyInfo, object instance)
+        private static void InjectPropertyWithMock(PropertyInfo propertyInfo, object instance, params IInterceptor[] interceptors)
         {
+            if (!propertyInfo.CanWrite)
+            {
+                return;
+            }
+
             var myType = propertyInfo.PropertyType;
 
             var mocks = instance.Mocks();
@@ -125,12 +130,11 @@ namespace Isla.Testing.Moq
             var mock = InvocationHelper.InvokeGenericMethodWithDynamicTypeArguments(mocks, a => a.Create<object>(), null,
                 myType);
 
-            if (!propertyInfo.CanWrite)
-            {
-                return;
-            }
+            var generator = new ProxyGenerator();
 
-            propertyInfo.SetValue(instance, ((Mock)mock).Object, null);
+            var proxiedMock = generator.CreateInterfaceProxyWithTarget(myType, ((Mock)mock).Object, interceptors);
+
+            propertyInfo.SetValue(instance, proxiedMock, null);
         }
 
         public static class InvocationHelper

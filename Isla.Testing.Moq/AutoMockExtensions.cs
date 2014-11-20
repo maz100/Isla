@@ -58,12 +58,13 @@ namespace Isla.Testing.Moq
 
         private static Mock<T> GetMockFromProperty<T>(object instance) where T : class
         {
-            var propertyInfo = instance.GetType().GetProperties().FirstOrDefault(x => x.PropertyType == typeof(T));
-
-            if (propertyInfo == null)
+            if (ProxyUtil.IsProxy(instance))
             {
-                propertyInfo = instance.GetType().BaseType.GetProperties().FirstOrDefault(x => x.PropertyType == typeof(T));
+                //if the instance has been wrapped in a proxy, unwrap it
+                instance = Castle.DynamicProxy.ProxyUtil.GetUnproxiedInstance(instance);
             }
+
+            var propertyInfo = instance.GetType().GetProperties().FirstOrDefault(x => x.PropertyType == typeof(T));
 
             if (propertyInfo == null)
             {
@@ -73,8 +74,14 @@ namespace Isla.Testing.Moq
             //get the mocked interface
             var value = propertyInfo.GetValue(instance, null);
 
+            if (ProxyUtil.IsProxy(value))
+            {
+                value = ProxyUtil.GetUnproxiedInstance(value);
+            }
+            
             //get its Mock property
             var property = value.GetType().GetProperties().FirstOrDefault(x => x.Name == "Mock");
+
 
             if (property == null)
             {
@@ -98,7 +105,14 @@ namespace Isla.Testing.Moq
 
         public static MockRepository Mocks(this object instance)
         {
+            if (ProxyUtil.IsProxy(instance))
+            {
+                //if the instance has been wrapped in a proxy, unwrap it
+                instance = Castle.DynamicProxy.ProxyUtil.GetUnproxiedInstance(instance);
+            }
+
             var mocksProvider = instance as IMockRepositoryProvider;
+
             return mocksProvider.Mocks();
         }
 

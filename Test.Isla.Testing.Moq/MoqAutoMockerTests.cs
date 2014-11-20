@@ -20,13 +20,13 @@ namespace Test.Isla.Testing.Moq
         [Test]
         public void Test_can_automock_class_with_no_default_constructor()
         {
-            var someClass = MoqAutoMocker.CreateInstance<SomeClass>();
+            var someClass = MoqAutoMocker.CreateInstance<SomeClassCtor>();
         }
 
         [Test]
         public void Test_non_default_constructor_injected()
         {
-            var someClass = MoqAutoMocker.CreateInstance<SomeClass>();
+            var someClass = MoqAutoMocker.CreateInstance<SomeClassCtor>();
 
             someClass.Mock<ISomeDependency1>().Setup(x => x.SomeMethod1());
             someClass.Mock<ISomeDependency2>().Setup(x => x.SomeMethod2());
@@ -48,7 +48,7 @@ namespace Test.Isla.Testing.Moq
         public void TestCreateInstance_as_proxy()
         {
             XmlConfigurator.Configure();
-            var proxiedInstance = MoqAutoMocker.Configure().EnableLogging().ProxyInstance<ISomeClass, SomeClass>();
+            var proxiedInstance = MoqAutoMocker.Configure().EnableLogging().ProxyInstance<ISomeClass, SomeClassCtor>();
             Assert.That(proxiedInstance.GetType().Name == "ISomeClassProxy");
             var result = proxiedInstance.SomeMethod("hello world");
         }
@@ -62,7 +62,7 @@ namespace Test.Isla.Testing.Moq
             var someClassProxy = MoqAutoMocker
                 .Configure()
                 .AddInterceptor(mockInterceptor.Object)
-                .ProxyInstance<ISomeClass, SomeClass>();
+                .ProxyInstance<ISomeClass, SomeClassCtor>();
 
             someClassProxy.SomeMethod("hello world");
 
@@ -80,7 +80,7 @@ namespace Test.Isla.Testing.Moq
                 .Configure()
                 .AddInterceptor(mockInterceptor.Object)
                 .EnableLogging()
-                .ProxyInstance<ISomeClass, SomeClass>();
+                .ProxyInstance<ISomeClass, SomeClassCtor>();
 
             var result = someClassProxy.SomeMethod("hello world");
 
@@ -116,6 +116,29 @@ namespace Test.Isla.Testing.Moq
 
         }
 
-        //do properties get injected 
+        [Test]
+        public void TestMock_proxied_instance_with_property_injection_can_retreive_mocked_properties()
+        {
+            //proxy an automocked class that uses property injection
+            var proxiedSomeClass = MoqAutoMocker.Configure()
+                .EnableLogging()
+                .ProxyInstance<ISomeClass, SomeClassProp>();
+
+            var isDependencyRetrieved = false;
+
+            try
+            {
+                var mockedPropertyDependency = proxiedSomeClass.Mock<ISomeDependency1>();
+                isDependencyRetrieved = mockedPropertyDependency != null;
+            }
+            catch (Exception ex)
+            {
+                isDependencyRetrieved = false;
+                Assert.Fail(ex.Message, ex);
+            }
+
+            Assert.That(isDependencyRetrieved);
+
+        }
     }
 }
