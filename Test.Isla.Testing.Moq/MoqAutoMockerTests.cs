@@ -72,12 +72,14 @@ namespace Test.Isla.Testing.Moq
         [Test]
         public void TestProxyInstance_with_logging_enabled_intercepts_mocked_dependencies()
         {
+            XmlConfigurator.Configure();
             var mockInterceptor = new Mock<IInterceptor>();
-            mockInterceptor.Setup(x => x.Intercept(It.IsAny<IInvocation>())).Callback<IInvocation>(x=>x.Proceed());
+            mockInterceptor.Setup(x => x.Intercept(It.IsAny<IInvocation>())).Callback<IInvocation>(x => x.Proceed());
 
             var someClassProxy = MoqAutoMocker
                 .Configure()
                 .AddInterceptor(mockInterceptor.Object)
+                .EnableLogging()
                 .ProxyInstance<ISomeClass, SomeClass>();
 
             var result = someClassProxy.SomeMethod("hello world");

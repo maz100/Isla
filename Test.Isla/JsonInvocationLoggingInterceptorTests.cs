@@ -48,7 +48,7 @@ namespace Test.Isla
 
             //then use an ILog to log the serialised object at info level
             var log = _interceptor.Create<ILog>();
-            var loggerName = new SomeClass().ToString();
+            var loggerName = new SomeClass().GetType().Name.ToString();
             _interceptor.Mock<ILogManager>().Setup(x => x.GetLogger(loggerName)).Returns(log.Object);
             log.Setup(x => x.Info(serialisedTimedInvocation));
 
@@ -73,7 +73,7 @@ namespace Test.Isla
 
             //then use an ILog to log the serialised object at info level
             var log = _interceptor.Create<ILog>();
-            var loggerName = new SomeClass().ToString();
+            var loggerName = new SomeClass().GetType().Name.ToString();
             _interceptor.Mock<ILogManager>().Setup(x => x.GetLogger(loggerName)).Returns(log.Object);
             log.Setup(x => x.Error(serialisedTimedInvocation));
 

@@ -15,7 +15,7 @@ namespace Isla.Logging
 
         public void Intercept(IInvocation invocation)
         {
-            var logger = LogManager.GetLogger(invocation.InvocationTarget.ToString());
+            var logger = LogManager.GetLogger(invocation.InvocationTarget.GetType().Name.ToString());
 
             var stopwatch = Stopwatch.StartNew();
 
