@@ -50,9 +50,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Logging\Components\LogMessageBuilder.cs" />
+    <Compile Include="Serialisation\Blacklists\IBlacklist.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logging\TimedInvocation.cs" />
     <Compile Include="Logging\Components\ILogManager.cs" />
+    <Compile Include="Serialisation\Components\BlacklistedContractResolver.cs" />
     <Compile Include="Serialisation\Components\IJsonSerializer.cs" />
     <Compile Include="Serialisation\Components\JsonSerializer.cs" />
     <Compile Include="Logging\Components\LogManager.cs" />

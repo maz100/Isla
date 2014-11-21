@@ -27,9 +27,9 @@ namespace Isla.Logging
     {
         public TimedInvocation Begin { get; set; }
 
-        public BeginTimedInvocation(IInvocation invocation)
+        public BeginTimedInvocation(TimedInvocation invocation)
         {
-            Begin = new TimedInvocation(invocation);
+            Begin = invocation;
         }
     }
 
@@ -37,9 +37,9 @@ namespace Isla.Logging
     {
         public TimedInvocation End { get; set; }
 
-        public EndTimedInvocation(IInvocation invocation)
+        public EndTimedInvocation(TimedInvocation invocation)
         {
-            End = new TimedInvocation(invocation);
+            End = invocation;
         }
     }
 }

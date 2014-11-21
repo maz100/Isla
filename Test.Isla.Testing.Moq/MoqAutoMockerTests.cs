@@ -54,6 +54,22 @@ namespace Test.Isla.Testing.Moq
         }
 
         [Test]
+        public void Test_parallel_execution_thread_context_in_log_file()
+        {
+            var proxies = new List<ISomeClass>();
+
+            for (int i = 0; i < 10; i++)
+            {
+                proxies.Add(MoqAutoMocker.Configure().EnableLogging().ProxyInstance<ISomeClass, SomeClassCtor>());
+            }
+
+            Parallel.ForEach(proxies, x =>
+            {
+                x.SomeMethod(Guid.NewGuid().ToString());
+            });
+        }
+
+        [Test]
         public void TestCreateInstanceWithInterfaceProxy_applies_interceptors()
         {
             var mockInterceptor = new Mock<IInterceptor>();

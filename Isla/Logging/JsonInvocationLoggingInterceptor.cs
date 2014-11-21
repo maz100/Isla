@@ -23,8 +23,14 @@ namespace Isla.Logging
             }
 
             var logger = LogManager.GetLogger(invocation.InvocationTarget.GetType().Name.ToString());
-            
-            var beginTimedInvocation = new BeginTimedInvocation(invocation);
+
+            if (log4net.ThreadContext.Properties["callid"] == null)
+            {
+                log4net.ThreadContext.Properties["callid"] = Guid.NewGuid();
+            }
+
+            var timedInvocation = new TimedInvocation(invocation);
+            var beginTimedInvocation = new BeginTimedInvocation(timedInvocation);
             var jsonBeginTimedInvocation = JsonSerializer.Serialize(beginTimedInvocation);
 
             logger.Debug(jsonBeginTimedInvocation);
@@ -45,13 +51,11 @@ namespace Isla.Logging
             finally
             {
                 stopwatch.Stop();
-
-                var timedInvocation = new TimedInvocation(invocation);
-                timedInvocation = new TimedInvocation(invocation);
+                
                 timedInvocation.ElapsedTime = stopwatch.Elapsed;
 
-                var endTimedInvocation = new EndTimedInvocation(invocation);
-                
+                var endTimedInvocation = new EndTimedInvocation(timedInvocation);
+
                 var jsonTimedInvocation = JsonSerializer.Serialize(timedInvocation);
                 var jsonEndTimedInvocation = JsonSerializer.Serialize(endTimedInvocation);
 
