@@ -23,7 +23,12 @@ namespace Isla.Logging
             }
 
             var logger = LogManager.GetLogger(invocation.InvocationTarget.GetType().Name.ToString());
-                        
+            
+            var beginTimedInvocation = new BeginTimedInvocation(invocation);
+            var jsonBeginTimedInvocation = JsonSerializer.Serialize(beginTimedInvocation);
+
+            logger.Debug(jsonBeginTimedInvocation);
+
             var stopwatch = Stopwatch.StartNew();
 
             Exception exception = null;
@@ -42,14 +47,21 @@ namespace Isla.Logging
                 stopwatch.Stop();
 
                 var timedInvocation = new TimedInvocation(invocation);
+                timedInvocation = new TimedInvocation(invocation);
                 timedInvocation.ElapsedTime = stopwatch.Elapsed;
+
+                var endTimedInvocation = new EndTimedInvocation(invocation);
+                
+                var jsonTimedInvocation = JsonSerializer.Serialize(timedInvocation);
+                var jsonEndTimedInvocation = JsonSerializer.Serialize(endTimedInvocation);
+
 
                 if (exception != null)
                 {
                     timedInvocation.ExceptionInfo = new ExceptionInfo(exception);
                 }
 
-                var jsonTimedInvocation = JsonSerializer.Serialize(timedInvocation);
+                jsonTimedInvocation = JsonSerializer.Serialize(timedInvocation);
 
                 // Log the final result
                 if (exception != null)
@@ -59,6 +71,7 @@ namespace Isla.Logging
                 else
                 {
                     logger.Info(jsonTimedInvocation);
+                    logger.Debug(jsonEndTimedInvocation);
                 }
             }
         }

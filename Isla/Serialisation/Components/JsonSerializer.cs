@@ -12,9 +12,9 @@ namespace Isla.Serialisation.Components
             return JsonConvert.DeserializeObject<T>(source);
         }
 
-        public string Serialize(TimedInvocation invocation)
+        public string Serialize(object instance)
         {
-            var serialisedInvocation = JsonConvert.SerializeObject(invocation);
+            var serialisedInvocation = JsonConvert.SerializeObject(instance);
 
             return serialisedInvocation;
         }

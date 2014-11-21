@@ -22,4 +22,24 @@ namespace Isla.Logging
         public ExceptionInfo ExceptionInfo { get; set; }
         public TimeSpan ElapsedTime { get; set; }
     }
+
+    public class BeginTimedInvocation
+    {
+        public TimedInvocation Begin { get; set; }
+
+        public BeginTimedInvocation(IInvocation invocation)
+        {
+            Begin = new TimedInvocation(invocation);
+        }
+    }
+
+    public class EndTimedInvocation
+    {
+        public TimedInvocation End { get; set; }
+
+        public EndTimedInvocation(IInvocation invocation)
+        {
+            End = new TimedInvocation(invocation);
+        }
+    }
 }

@@ -4,7 +4,7 @@ namespace Isla.Serialisation.Components
 {
     public interface IJsonSerializer
     {
-        string Serialize(TimedInvocation invocation);
+        string Serialize(object instance);
         T Deserialize<T>(string source);
     }
 }

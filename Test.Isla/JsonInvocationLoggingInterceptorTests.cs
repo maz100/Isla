@@ -59,6 +59,39 @@ namespace Test.Isla
         }
 
         [Test]
+        public void TestIntercept_write_begin_and_end_debug_log_statements()
+        {
+            var logMock = _interceptor.Create<ILog>();
+            var beginMessage = "some begin message";
+            var endMessage = "some end message";
+
+            var invocation = SetupInvocationMock();
+
+            _interceptor.Mock<ILogManager>().Setup(x => x.GetLogger(It.IsAny<string>())).Returns(logMock.Object);
+
+            //we expect the serialiser to return a begin message based on the invocation
+            //the timed invocation should have an empty string value for elapsed time
+            _interceptor.Mock<IJsonSerializer>().Setup(x => x.Serialize(It.Is<BeginTimedInvocation>(y => (matchTimedInvocation(y.Begin, invocation.Object))))).Returns(beginMessage);
+
+            //the begin message should be logged at debug level
+            logMock.Setup(x => x.Debug(beginMessage));
+            TimeSpan result;
+
+            //here we expect the serialiser to return an end message based on the invocation
+            //this time the elapsed time value should be set - this is a job of the intercept
+            //method which is being tested
+            _interceptor.Mock<IJsonSerializer>().Setup(x => x.Serialize(It.Is<EndTimedInvocation>(y => (matchTimedInvocation(y.End, invocation.Object))))).Returns(endMessage);
+
+            //the end Message should also be logged
+            logMock.Setup(x => x.Debug(endMessage));
+
+            //method under test
+            _interceptor.Intercept(invocation.Object);
+
+            _interceptor.VerifyAll();
+        }
+
+        [Test]
         public void TestIntercept_HandlesErrorAndPreservesStackTrace()
         {
             var invocation = SetupInvocationMock();
@@ -131,7 +164,7 @@ namespace Test.Isla
         {
             var timedInvocation = new TimedInvocation();
             timedInvocation.MethodName = "test method name";
-            timedInvocation.Arguments = new object[] {"hello", 3, DateTime.Now};
+            timedInvocation.Arguments = new object[] { "hello", 3, DateTime.Now };
             timedInvocation.ReturnValue = "test return value";
             timedInvocation.ElapsedTime = new TimeSpan(1, 2, 3);
             var serialiser = new JsonStringSerializer();
@@ -146,8 +179,8 @@ namespace Test.Isla
         {
             var invocation = _interceptor.Create<IInvocation>();
             invocation.Setup(x => x.InvocationTarget).Returns(new SomeClass());
-            invocation.Setup(x => x.Method).Returns(typeof (SomeClass).GetMethod("SomeMethod"));
-            invocation.Setup(x => x.Arguments).Returns(new object[] {"hello"});
+            invocation.Setup(x => x.Method).Returns(typeof(SomeClass).GetMethod("SomeMethod"));
+            invocation.Setup(x => x.Arguments).Returns(new object[] { "hello" });
             invocation.Setup(x => x.ReturnValue).Returns("hello");
 
             invocation.Setup(x => x.Proceed());
@@ -173,15 +206,13 @@ namespace Test.Isla
 
             var x =
                 (JsonInvocationLoggingInterceptor)
-                    generator.CreateClassProxy(typeof (JsonInvocationLoggingInterceptor), null, options);
+                    generator.CreateClassProxy(typeof(JsonInvocationLoggingInterceptor), null, options);
 
             var loggerName = "test logger";
 
             var expectedLog = x.Mocks().Of<ILog>().First();
 
-            var logManager = x.Mocks().Of<ILogManager>()
-                .Where(y => y.GetLogger(loggerName) == expectedLog)
-                .First();
+            var logManager = x.Mocks().Of<ILogManager>().First(y => y.GetLogger(loggerName) == expectedLog);
 
             var actualLog = logManager.GetLogger(loggerName);
 
@@ -246,7 +277,7 @@ namespace Test.Isla
 
             var rawLogMessages = lines.Select(s.DeserializeFromString<RawLogMessage>);
 
-            var logMessages = rawLogMessages.Select(x => new LogMessage
+            var logMessages = rawLogMessages.Where(x => x.Level == "INFO").Select(x => new LogMessage
             {
                 Date = x.Date,
                 Level = x.Level,
@@ -266,7 +297,7 @@ namespace Test.Isla
         {
             var timedInvocation = new TimedInvocation();
             timedInvocation.MethodName = "test method name";
-            timedInvocation.Arguments = new object[] {"hello", 3, DateTime.Now};
+            timedInvocation.Arguments = new object[] { "hello", 3, DateTime.Now };
             timedInvocation.ReturnValue = "test return value";
             timedInvocation.ElapsedTime = new TimeSpan(1, 2, 3);
 
