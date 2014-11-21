@@ -6,7 +6,7 @@ namespace Isla.Serialisation.Components
 {
     public class JsonSerializer : IJsonSerializer
     {
-		public IBlacklist Blacklist { get; set; }
+        public IBlacklist Blacklist { get; set; }
 
         #region IJsonSerializer implementation
 
@@ -17,9 +17,9 @@ namespace Isla.Serialisation.Components
 
         public string Serialize(object instance)
         {
-	        var serialisedInvocation = JsonConvert.SerializeObject(
-		        invocation,
-		        new JsonSerializerSettings { ContractResolver = new BlacklistedContractResolver(Blacklist) });
+            var serialisedInvocation = JsonConvert.SerializeObject(
+                instance,
+                new JsonSerializerSettings { ContractResolver = new BlacklistedContractResolver(Blacklist) });
 
             return serialisedInvocation;
         }
