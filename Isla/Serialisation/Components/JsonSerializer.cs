@@ -1,5 +1,4 @@
-﻿using Isla.Logging;
-using Isla.Serialisation.Blacklists;
+﻿using Isla.Serialisation.Blacklists;
 using Newtonsoft.Json;
 
 namespace Isla.Serialisation.Components
@@ -17,9 +16,14 @@ namespace Isla.Serialisation.Components
 
         public string Serialize(object instance)
         {
-            var serialisedInvocation = JsonConvert.SerializeObject(
-                instance,
-                new JsonSerializerSettings { ContractResolver = new BlacklistedContractResolver(Blacklist) });
+	        var serialisedInvocation = JsonConvert.SerializeObject(
+		        instance,
+		        new JsonSerializerSettings
+			        {
+				        ContractResolver = new BlacklistedContractResolver(Blacklist),
+				        ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+				        PreserveReferencesHandling = PreserveReferencesHandling.Objects
+			        });
 
             return serialisedInvocation;
         }
