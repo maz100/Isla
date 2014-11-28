@@ -18,13 +18,18 @@ namespace Isla.Serialisation.Components
 		
 		protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
 		{
+			IList<JsonProperty> properties = base.CreateProperties(type, memberSerialization);
+			if (this.blacklist == null)
+			{
+				return properties;
+			}
+
 			if (this.blacklist.ShouldNotSerialize(type))
 			{
 				return new List<JsonProperty>();
 			}
 
-			IList<JsonProperty> properties = base.CreateProperties(type, memberSerialization);
-			if (this.blacklist == null || !this.blacklist.Any())
+			if (!this.blacklist.Any())
 			{
 				return properties;
 			}
