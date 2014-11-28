@@ -15,11 +15,21 @@ namespace Isla.Serialisation.Components
 		{
 			this.blacklist = blacklist;
 		}		
-
+		
 		protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
 		{
 			IList<JsonProperty> properties = base.CreateProperties(type, memberSerialization);
-			if (this.blacklist == null || !this.blacklist.Any())
+			if (this.blacklist == null)
+			{
+				return properties;
+			}
+
+			if (this.blacklist.ShouldNotSerialize(type))
+			{
+				return new List<JsonProperty>();
+			}
+
+			if (!this.blacklist.Any())
 			{
 				return properties;
 			}
