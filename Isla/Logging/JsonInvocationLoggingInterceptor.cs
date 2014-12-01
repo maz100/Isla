@@ -22,13 +22,12 @@ namespace Isla.Logging
 				XmlConfigurator.Configure();
 			}
 
-			var logger = LogManager.GetLogger(invocation.InvocationTarget.GetType().Name.ToString());
+			var logger = LogManager.GetLogger(invocation.InvocationTarget.GetType().Name);
 
 			if (log4net.ThreadContext.Properties["callid"] == null)
 			{
 				log4net.ThreadContext.Properties["callid"] = Guid.NewGuid();
 			}
-
 
 			Exception exception = null;
 			Stopwatch stopwatch = null;
@@ -55,6 +54,7 @@ namespace Isla.Logging
 				stopwatch.Stop();
 
 				timedInvocation.ElapsedTime = stopwatch.Elapsed;
+				timedInvocation.ReturnValue = invocation.ReturnValue;
 
 				var endTimedInvocation = new EndTimedInvocation(timedInvocation);
 
