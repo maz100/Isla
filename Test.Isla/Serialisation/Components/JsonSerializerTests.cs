@@ -3,6 +3,8 @@ using Isla.Logging;
 using NUnit.Framework;
 using ServiceStack.Text;
 using JsonSerializer = Isla.Serialisation.Components.JsonSerializer;
+using Isla.Serialisation.Blacklists;
+using System.Linq;
 
 namespace Test.Isla.Serialisation.Components
 {
@@ -33,6 +35,31 @@ namespace Test.Isla.Serialisation.Components
 
                 var serialize = new JsonSerializer<DateTime>().SerializeToString(DateTime.Now);
             }
+        }
+
+        [Test]
+        public void TestSerialise_exclude_blacklisted_properties()
+        {
+            var blacklist = new DefaultBlacklist();
+
+            blacklist.AddProperty("SomeProperty");
+
+            var serializer = new JsonSerializer();
+
+            var serializerWithBlacklist = new JsonSerializer{ Blacklist = blacklist };
+
+            var dto = new SomeDto{ SomeProperty = "Hello World" };
+
+            var result = serializer.Serialize(dto);
+
+            var blackListdResult = serializerWithBlacklist.Serialize(dto);
+
+            Assert.That(result.Contains("SomeProperty") && !blackListdResult.Contains("SomeProperty"));
+        }
+
+        public class SomeDto
+        {
+            public string SomeProperty{ get; set; }
         }
     }
 }
