@@ -21,6 +21,16 @@ namespace Isla.Components
             File.WriteAllLines(path, content);
         }
 
+        public bool Exists(string path)
+        {
+            return File.Exists(path);
+        }
+
+        public FileStream Create(string path)
+        {
+            return File.Create(path);
+        }
+
         #endregion
     }
 }
