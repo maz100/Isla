@@ -214,9 +214,10 @@ namespace Test.Isla
 
             var actualLog = logManager.GetLogger(loggerName);
 
+            //we created a mock via the mixin instance
+            //we retrieved the mock via the property getter.
+            //they should be the same.
             Assert.AreEqual(expectedLog, actualLog);
-
-            x.Mocks().VerifyAll();
         }
 
         [Test]
@@ -309,6 +310,11 @@ namespace Test.Isla
 
             var errors = logMessages.Where(x => x.Level == "ERROR")
                 .ToList();
+        }
+
+        [Test]
+        public void TestIntercept_suppress_parameter_serialisation()
+        {
         }
     }
 }
