@@ -75,7 +75,6 @@ namespace Test.Isla
 
             //the begin message should be logged at debug level
             logMock.Setup(x => x.Debug(beginMessage));
-            TimeSpan result;
 
             //here we expect the serialiser to return an end message based on the invocation
             //this time the elapsed time value should be set - this is a job of the intercept
@@ -115,7 +114,7 @@ namespace Test.Isla
             {
                 _interceptor.Intercept(invocation.Object);
             }
-            catch (ApplicationException ex)
+            catch (ApplicationException)
             {
                 _interceptor.VerifyAll();
                 return;
@@ -151,7 +150,7 @@ namespace Test.Isla
             {
                 someClass.SomeMethod("");
             }
-            catch (ArgumentNullException ex)
+            catch (ArgumentNullException)
             {
                 expectedErrorThrown = true;
             }
@@ -190,10 +189,9 @@ namespace Test.Isla
 
         private bool matchTimedInvocation(TimedInvocation y, IInvocation invocation)
         {
-            return y.ElapsedTime != null &&
-                   y.MethodName == invocation.Method.Name &&
-                   y.Arguments == invocation.Arguments &&
-                   y.ReturnValue == invocation.ReturnValue;
+            return y.MethodName == invocation.Method.Name &&
+            y.Arguments == invocation.Arguments &&
+            y.ReturnValue == invocation.ReturnValue;
         }
 
         [Test]
@@ -248,12 +246,6 @@ namespace Test.Isla
         }
 
         [Test]
-        public void TestJsonLayout()
-        {
-            var serializedLayout = new SerializedLayout();
-        }
-
-        [Test]
         public void TestDeserialiseLogEntry()
         {
             var jsonLogEntry =
@@ -278,12 +270,12 @@ namespace Test.Isla
             var rawLogMessages = lines.Select(s.DeserializeFromString<RawLogMessage>);
 
             var logMessages = rawLogMessages.Where(x => x.Level == "INFO").Select(x => new LogMessage
-            {
-                Date = x.Date,
-                Level = x.Level,
-                Logger = x.Logger,
-                TimedInvocation = s.DeserializeFromString<TimedInvocation>(x.Message)
-            }).ToList();
+                {
+                    Date = x.Date,
+                    Level = x.Level,
+                    Logger = x.Logger,
+                    TimedInvocation = s.DeserializeFromString<TimedInvocation>(x.Message)
+                }).ToList();
 
             var searchResults = logMessages.Where(x => x.TimedInvocation.Arguments[0].Equals("hello world")).ToList();
 

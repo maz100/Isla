@@ -18,7 +18,7 @@ namespace Isla.Components
 
         public void WriteAllLines(string path, string[] content)
         {
-            File.WriteAllLines(path, content);
+            File.WriteAllLines(path, content);            
         }
 
         public bool Exists(string path)
