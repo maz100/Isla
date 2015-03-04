@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="JsonInvocationLoggingInterceptorTests.cs" />
+    <Compile Include="Logging\TimedInvocationTests.cs" />
     <Compile Include="Serialisation\Components\JsonSerializerTests.cs" />
     <Compile Include="Serialisation\Components\DummyInvocation.cs" />
     <Compile Include="Serialisation\Components\ISomeClass.cs" />
