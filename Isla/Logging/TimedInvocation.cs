@@ -85,9 +85,9 @@ namespace Isla.Logging
 
     public enum InvocationSerialisation
     {
-        None,
+        Both,
         Arguments,
         ReturnValue,
-        Both
+        None
     }
 }

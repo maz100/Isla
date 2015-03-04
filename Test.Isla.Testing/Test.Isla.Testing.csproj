@@ -48,11 +48,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\..\Isla.Testing\Isla.Testing.csproj">
+    <ProjectReference Include="..\Isla.Testing\Isla.Testing.csproj">
       <Project>{75133565-7236-4184-B3F7-A4024A8F945C}</Project>
       <Name>Isla.Testing</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Isla\Isla.csproj">
+    <ProjectReference Include="..\Isla\Isla.csproj">
       <Project>{7A7EEDCE-0406-49FB-A8CC-1D7A31BEA319}</Project>
       <Name>Isla</Name>
     </ProjectReference>

@@ -19,12 +19,24 @@ namespace Isla
             }
         }
 
+        public InvocationSerialisation InvocationSerialisation { get; set; }
+
+        public static IslaInstaller With(InvocationSerialisation invocationSerialisation)
+        {
+            var installer = new IslaInstaller();
+
+            installer.InvocationSerialisation = invocationSerialisation;
+
+            return installer;
+        }
+
         #region IWindsorInstaller implementation
 
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             container.Register(
-                Component.For<JsonInvocationLoggingInterceptor>(),
+                Component.For<JsonInvocationLoggingInterceptor>()
+                         .DependsOn(Property.ForKey<InvocationSerialisation>().Eq(InvocationSerialisation)),
                 Classes.FromThisAssembly()
                     .Where(x => x.Namespace.Contains("Components"))
                     .WithServiceFirstInterface());
