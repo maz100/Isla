@@ -66,6 +66,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IslaInstallerTests.cs" />
     <Compile Include="JsonInvocationLoggingInterceptorTests.cs" />
     <Compile Include="Logging\TimedInvocationTests.cs" />
     <Compile Include="Serialisation\Components\JsonSerializerTests.cs" />

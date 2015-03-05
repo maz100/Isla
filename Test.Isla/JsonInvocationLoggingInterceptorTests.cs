@@ -30,9 +30,8 @@ namespace Test.Isla
         {
             _container = new WindsorContainer();
 
-            _container.Install(IslaInstaller
-                                    .With(InvocationSerialisation.Both)
-                                    .WithIdentation(false),
+            _container.Install(IslaInstallerExtensions.WithIndentation(IslaInstaller
+                                        .With(InvocationSerialisation.Both), (bool) false),
                                new TestInstaller());
 
             _interceptor = MoqAutoMocker.CreateInstance<JsonInvocationLoggingInterceptor>();

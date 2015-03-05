@@ -6,5 +6,6 @@ namespace Isla.Serialisation.Components
     {
         string Serialize(object instance);
         T Deserialize<T>(string source);
+        bool Indent { get; set; }
     }
 }

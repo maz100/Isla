@@ -27,7 +27,16 @@ namespace Isla
         {
             var installer = new IslaInstaller();
 
-            installer.InvocationSerialisation = invocationSerialisation;
+            IslaInstallerExtensions.With(installer, invocationSerialisation);
+
+            return installer;   
+        }
+
+        public static IslaInstaller WithIndentation(bool indent)
+        {
+            var installer = new IslaInstaller();
+
+            IslaInstallerExtensions.WithIndentation(installer, indent);
 
             return installer;
         }
@@ -59,7 +68,7 @@ namespace Isla
             return installer;
         }
 
-        public static IslaInstaller WithIdentation(this IslaInstaller installer, bool indent)
+        public static IslaInstaller WithIndentation(this IslaInstaller installer, bool indent)
         {
             installer.Indent = indent;
 
