@@ -30,7 +30,10 @@ namespace Test.Isla
         {
             _container = new WindsorContainer();
 
-            _container.Install(new IslaInstaller(), new TestInstaller());
+            _container.Install(IslaInstaller
+                                    .With(InvocationSerialisation.Both)
+                                    .WithIdentation(false),
+                               new TestInstaller());
 
             _interceptor = MoqAutoMocker.CreateInstance<JsonInvocationLoggingInterceptor>();
         }
@@ -310,11 +313,6 @@ namespace Test.Isla
 
             var errors = logMessages.Where(x => x.Level == "ERROR")
                 .ToList();
-        }
-
-        [Test]
-        public void TestIntercept_suppress_parameter_serialisation()
-        {
         }
     }
 }

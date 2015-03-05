@@ -6,6 +6,7 @@ namespace Isla.Serialisation.Components
     public class JsonSerializer : IJsonSerializer
     {
         public IBlacklist Blacklist { get; set; }
+        public bool Indent { get; set; }
 
         #region IJsonSerializer implementation
 
@@ -16,6 +17,13 @@ namespace Isla.Serialisation.Components
 
         public string Serialize(object instance)
         {
+            var indent = Formatting.None;
+
+            if (Indent)
+            {
+                indent = Formatting.Indented;
+            }
+
             var serialisedInvocation = JsonConvert.SerializeObject(
                                            instance,
                                            new JsonSerializerSettings
@@ -23,7 +31,7 @@ namespace Isla.Serialisation.Components
                     ContractResolver = new BlacklistedContractResolver(Blacklist),
                     ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
                     PreserveReferencesHandling = PreserveReferencesHandling.Objects,
-                    Formatting = Formatting.Indented
+                    Formatting = indent
                 });
 
             return serialisedInvocation;

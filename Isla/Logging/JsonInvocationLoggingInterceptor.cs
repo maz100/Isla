@@ -12,6 +12,7 @@ namespace Isla.Logging
     {
         public IJsonSerializer JsonSerializer { get; set; }
         public ILogManager LogManager { get; set; }
+        public InvocationSerialisation InvocationSerialisation { get; set; }
 
         #region IInterceptor implementation
 
@@ -34,7 +35,7 @@ namespace Isla.Logging
             TimedInvocation timedInvocation = null;
             try
             {
-                timedInvocation = new TimedInvocation(invocation, InvocationSerialisation.Both);
+                timedInvocation = new TimedInvocation(invocation, InvocationSerialisation);
                 var beginTimedInvocation = new BeginTimedInvocation(timedInvocation);
                 var jsonBeginTimedInvocation = JsonSerializer.Serialize(beginTimedInvocation);
 
