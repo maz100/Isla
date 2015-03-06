@@ -47,19 +47,19 @@ namespace Test.Isla.Logging
         }
 
         [Test]
-        [TestCase(InvocationSerialisation.Arguments,true)]
+        [TestCase(InvocationSerialisation.Arguments, true)]
         [TestCase(InvocationSerialisation.Both, false)]
         [TestCase(InvocationSerialisation.None, true)]
         [TestCase(InvocationSerialisation.ReturnValue, false)]
-        public void TestReturnValueSerialisationIsSuppressed(InvocationSerialisation invocationSerialisation, bool suppressSerialisation)
+        public void TestReturnValueSerialisationIsSuppressed(InvocationSerialisation invocationSerialisation, bool shouldSuppressSerialisation)
         {
-            var expected = (object)_invocation.ReturnValue.GetType().ToString();
+            var suppressedValue = _invocation.ReturnValue.GetType().ToString();
 
             var timedInvocation = new TimedInvocation(_invocation, invocationSerialisation);
 
-            var actual = timedInvocation.ReturnValue;
+            var isSerialistionSuppressed = (suppressedValue.Equals(timedInvocation.ReturnValue));
 
-            Assert.That((expected == actual) == suppressSerialisation);
+            Assert.That(isSerialistionSuppressed == shouldSuppressSerialisation);
         }
     }
 }
